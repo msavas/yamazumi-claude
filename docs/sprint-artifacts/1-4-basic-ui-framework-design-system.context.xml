@@ -1,0 +1,378 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>1</epicId>
+    <storyId>4</storyId>
+    <title>Basic UI Framework &amp; Design System</title>
+    <status>drafted</status>
+    <generatedAt>2025-11-20</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/1-4-basic-ui-framework-design-system.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>a developer</asA>
+    <iWant>a basic UI framework with design tokens and reusable components</iWant>
+    <soThat>I can build consistent, accessible interfaces throughout the application</soThat>
+    <tasks>
+      - [ ] Install and configure Material UI (MUI) (AC: Basic components)
+        - [ ] Install @mui/material, @emotion/react, @emotion/styled
+        - [ ] Install @mui/icons-material for icons
+        - [ ] Configure MUI theme provider in app/layout.tsx
+        - [ ] Create lib/theme.ts for MUI theme configuration
+        - [ ] Verify MUI components render correctly
+
+      - [ ] Define design tokens and theme configuration (AC: Color palette, typography, spacing)
+        - [ ] Configure color palette (Professional Blue theme)
+          - [ ] Primary: #2563eb (Blue)
+          - [ ] Secondary: #64748b (Slate)
+          - [ ] Accent: #0ea5e9 (Sky Blue)
+          - [ ] Success: #10b981 (Green - value-added work)
+          - [ ] Warning: #f59e0b (Amber - non-value-added work)
+          - [ ] Error: #ef4444 (Red - waste)
+          - [ ] Info: #3b82f6 (Blue)
+        - [ ] Configure waste categorization colors (consistent across all themes)
+          - [ ] Red (#ef4444): Waste activities
+          - [ ] Yellow (#f59e0b): Non-value-added activities
+          - [ ] Green (#10b981): Value-added activities
+        - [ ] Configure typography system (system font stack)
+          - [ ] Headings: System font stack (San Francisco, Segoe UI, Roboto)
+          - [ ] Body: System font stack
+          - [ ] Monospace: 'SF Mono', 'Monaco', 'Consolas' for technical data
+        - [ ] Configure spacing scale (4px base unit: 4px, 8px, 12px, 16px, 24px, 32px, 48px, 64px)
+        - [ ] Configure breakpoints (Desktop ≥1024px, Tablet 768-1023px, Mobile &lt;768px)
+        - [ ] Create TypeScript theme types in types/theme.ts
+
+      - [ ] Create basic component library (AC: Basic components)
+        - [ ] Create components/ui/ directory for reusable UI components
+        - [ ] Create Button component (Button.tsx)
+          - [ ] Primary, secondary, tertiary, destructive variants
+          - [ ] Accessibility: keyboard navigation, focus indicators, ARIA labels
+        - [ ] Create Input component (Input.tsx)
+          - [ ] Text input with label, help text, error states
+          - [ ] Accessibility: proper label associations, error announcements
+        - [ ] Create Card component (Card.tsx)
+          - [ ] Container with shadow, padding, border radius
+          - [ ] Variants: default, outlined, elevated
+        - [ ] Verify all components are accessible (WCAG AA)
+          - [ ] Color contrast ratios meet 4.5:1 minimum for text
+          - [ ] Keyboard navigation works (Tab, Enter, Space)
+          - [ ] Focus indicators visible (2px outline, #2563eb color)
+          - [ ] Screen reader support with proper ARIA attributes
+
+      - [ ] Create layout components (AC: Responsive layout utilities)
+        - [ ] Create components/layout/ directory
+        - [ ] Create Header component (Header.tsx)
+          - [ ] Top navigation bar with Material UI AppBar
+          - [ ] Logo placeholder
+          - [ ] Navigation menu items
+          - [ ] Responsive behavior (hamburger menu for mobile)
+        - [ ] Create Sidebar component (Sidebar.tsx)
+          - [ ] Fixed width sidebar for desktop (300px)
+          - [ ] Collapsible/drawer for mobile
+          - [ ] Material UI Drawer component
+        - [ ] Create MainContent component (MainContent.tsx)
+          - [ ] Content area with proper padding and max-width
+          - [ ] Responsive grid system (Material UI Grid)
+        - [ ] Verify responsive behavior at all breakpoints (Desktop, Tablet, Mobile)
+
+      - [ ] Update app metadata and branding (AC: Consistent branding)
+        - [ ] Update app/layout.tsx metadata
+          - [ ] Change title from "Create Next App" to "Yamazumi"
+          - [ ] Update description: "Video-based work element analysis tool for manufacturing"
+        - [ ] Apply MUI ThemeProvider to app/layout.tsx
+        - [ ] Verify theme is applied globally
+
+      - [ ] Create design system documentation (AC: Developer guidance)
+        - [ ] Create docs/design-system.md
+        - [ ] Document color palette with usage guidelines
+        - [ ] Document typography scale and usage
+        - [ ] Document spacing scale
+        - [ ] Document component usage examples
+        - [ ] Document accessibility guidelines (WCAG AA compliance)
+        - [ ] Include code examples for each component
+
+      - [ ] Verify accessibility compliance (AC: WCAG AA minimum)
+        - [ ] Run Lighthouse accessibility audit
+        - [ ] Verify color contrast ratios (WebAIM Contrast Checker)
+        - [ ] Test keyboard navigation (Tab through all interactive elements)
+        - [ ] Test screen reader (VoiceOver or NVDA)
+        - [ ] Ensure all interactive elements have visible focus indicators
+        - [ ] Verify touch targets are minimum 44px × 44px for mobile
+        - [ ] Document any accessibility issues and resolutions
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    Given I am building UI components
+    When I use the design system
+    Then I have access to:
+    - Color palette (including red/yellow/green for waste categorization)
+    - Typography system
+    - Spacing scale
+    - Basic button, input, and card components
+    - Responsive layout utilities
+
+    And Components follow accessibility best practices (WCAG AA minimum)
+    And Color contrast meets accessibility standards
+    And Components are responsive (work on desktop and tablet)
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/ux-design-specification.md</path>
+        <title>UX Design Specification - Visual Foundation</title>
+        <section>3. Visual Foundation</section>
+        <snippet>
+          Professional Blue color theme with complete palette: Primary #2563eb (Blue), Secondary #64748b (Slate), Success #10b981 (Green - value-added), Warning #f59e0b (Amber - non-value-added), Error #ef4444 (Red - waste). Typography system uses system font stack. Spacing scale based on 4px base unit. WCAG 2.1 Level AA compliance required.
+        </snippet>
+      </doc>
+      <doc>
+        <path>docs/ux-design-specification.md</path>
+        <title>UX Design Specification - Design System Foundation</title>
+        <section>1. Design System Foundation</section>
+        <snippet>
+          Material UI (MUI) as primary component library for all standard UI components. Used for: Buttons, forms, inputs, navigation, dialogs, layout, typography, icons. Custom components styled to match MUI theme. Proven libraries for specialized features (Video.js, Recharts).
+        </snippet>
+      </doc>
+      <doc>
+        <path>docs/ux-design-specification.md</path>
+        <title>UX Design Specification - Component Library</title>
+        <section>6. Component Library</section>
+        <snippet>
+          From Material UI: Buttons (primary, secondary, outlined, text, destructive), Text fields, Select, Cards, Lists, Dialogs, AppBar, Icons (Material Icons), Typography, Grid/Layout, Tooltips, Chips/Badges. Custom components: Video Timeline, Work Element List, Stacked Bar Chart, Yamazumi Chart, Upload Area.
+        </snippet>
+      </doc>
+      <doc>
+        <path>docs/ux-design-specification.md</path>
+        <title>UX Design Specification - UX Pattern Decisions</title>
+        <section>8. UX Pattern Decisions</section>
+        <snippet>
+          Button Hierarchy: Primary (blue #2563eb, white text), Secondary (outlined, blue border), Tertiary (text button), Destructive (red #ef4444). Form Patterns: Label above input, required field indicator (*), validation on blur, error display inline below input. Touch targets minimum 44px × 44px for mobile.
+        </snippet>
+      </doc>
+      <doc>
+        <path>docs/architecture.md</path>
+        <title>Architecture - ADR-002: Material UI + Tailwind CSS Hybrid</title>
+        <section>ADR-002</section>
+        <snippet>
+          Use Material UI as primary component library, Tailwind for utility classes. Matches UX spec, enterprise-ready components, utility classes for custom styling. Two styling systems with clear separation (manageable approach).
+        </snippet>
+      </doc>
+      <doc>
+        <path>docs/architecture.md</path>
+        <title>Architecture - Implementation Patterns</title>
+        <section>Implementation Patterns</section>
+        <snippet>
+          Naming: Components PascalCase.tsx, utilities camelCase.ts, hooks usePrefix.ts. Code Organization: Components by feature. Error Handling: React Error Boundary + Material UI Snackbar. Color Coding: Waste Red (#ef4444), Non-value-added Yellow (#f59e0b), Value-added Green (#10b981).
+        </snippet>
+      </doc>
+      <doc>
+        <path>docs/epics.md</path>
+        <title>Epic 1: Foundation &amp; Infrastructure - Story 1.4</title>
+        <section>Story 1.4: Basic UI Framework &amp; Design System</section>
+        <snippet>
+          Set up Tailwind CSS or similar utility-first CSS framework. Define design tokens (colors, typography, spacing). Create basic component library (Button, Input, Card, etc.). Implement color system: red (waste), yellow (non-value-added), green (value-added). Ensure high contrast for factory floor viewing. Create layout components (Header, Sidebar, Main content area).
+        </snippet>
+      </doc>
+      <doc>
+        <path>docs/PRD.md</path>
+        <title>PRD - User Experience Principles</title>
+        <section>User Experience Principles</section>
+        <snippet>
+          Professional but approachable. Data-forward: Charts and visualizations are the hero. Color-coded throughout: Consistent red/yellow/green across all views. Clean and focused: Minimal chrome, maximum content visibility. High contrast for factory floor viewing (may be viewed on tablets in bright environments).
+        </snippet>
+      </doc>
+    </docs>
+    <code>
+      <artifact>
+        <path>app/layout.tsx</path>
+        <kind>layout</kind>
+        <symbol>RootLayout</symbol>
+        <lines>1-35</lines>
+        <reason>Root layout file where MUI ThemeProvider needs to be integrated and metadata updated from "Create Next App" to "Yamazumi"</reason>
+      </artifact>
+      <artifact>
+        <path>app/page.tsx</path>
+        <kind>page</kind>
+        <symbol>Home</symbol>
+        <lines>1-66</lines>
+        <reason>Home page that currently shows Next.js default content - reference for existing Tailwind usage patterns</reason>
+      </artifact>
+      <artifact>
+        <path>app/globals.css</path>
+        <kind>styles</kind>
+        <symbol>N/A</symbol>
+        <lines>N/A</lines>
+        <reason>Global CSS file where Tailwind directives are imported - will need to work alongside MUI styles</reason>
+      </artifact>
+    </code>
+    <dependencies>
+      <node>
+        <package name="@mui/material" version="latest" type="dependencies">Material UI core components</package>
+        <package name="@emotion/react" version="latest" type="dependencies">Required peer dependency for MUI</package>
+        <package name="@emotion/styled" version="latest" type="dependencies">Required peer dependency for MUI</package>
+        <package name="@mui/icons-material" version="latest" type="dependencies">Material Icons for UI components</package>
+        <package name="next" version="16.0.3" type="dependencies">Already installed</package>
+        <package name="react" version="19.2.0" type="dependencies">Already installed</package>
+        <package name="react-dom" version="19.2.0" type="dependencies">Already installed</package>
+        <package name="tailwindcss" version="^4" type="devDependencies">Already installed - will be used alongside MUI</package>
+        <package name="typescript" version="^5" type="devDependencies">Already installed</package>
+      </node>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    - Material UI must be the primary component library (enterprise-ready, matches UX spec)
+    - Tailwind CSS can be used for utility classes alongside MUI (already configured)
+    - Two styling systems must have clear separation (MUI for components, Tailwind for utilities)
+    - Color system must use exact hex codes from UX spec: Red #ef4444 (waste), Yellow #f59e0b (non-value-added), Green #10b981 (value-added)
+    - Waste categorization colors must be consistent across all themes and components
+    - Typography must use system font stack (San Francisco, Segoe UI, Roboto)
+    - Spacing scale must use 4px base unit (4px, 8px, 12px, 16px, 24px, 32px, 48px, 64px)
+    - All components must follow WCAG 2.1 Level AA accessibility standards
+    - Color contrast ratios must meet 4.5:1 minimum for text
+    - Touch targets must be minimum 44px × 44px for mobile/tablet
+    - Focus indicators must be visible (2px outline, #2563eb color)
+    - Components must be responsive (Desktop ≥1024px, Tablet 768-1023px, Mobile &lt;768px)
+    - High contrast required for factory floor viewing (bright environments, tablets)
+    - Naming conventions: Components PascalCase.tsx, utilities camelCase.ts
+    - Code organization: Components by feature in folders (components/ui/, components/layout/)
+    - Theme configuration must be in lib/theme.ts
+    - TypeScript theme types must be in types/theme.ts
+    - App metadata must be updated: title "Yamazumi", description "Video-based work element analysis tool for manufacturing"
+    - Design system documentation must be created in docs/design-system.md
+    - Follow Prettier formatting: single quotes, 2-space indent, semicolons, 100 char max width
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>MUI Theme Configuration</name>
+      <kind>TypeScript Interface</kind>
+      <signature>
+        // lib/theme.ts
+        import { createTheme } from '@mui/material/styles';
+
+        export const theme = createTheme({
+          palette: {
+            primary: { main: '#2563eb' },  // Blue
+            secondary: { main: '#64748b' }, // Slate
+            error: { main: '#ef4444' },    // Red (waste)
+            warning: { main: '#f59e0b' },  // Amber (non-value-added)
+            success: { main: '#10b981' },  // Green (value-added)
+            info: { main: '#3b82f6' },     // Blue
+          },
+          typography: {
+            fontFamily: [
+              '-apple-system',
+              'BlinkMacSystemFont',
+              '"Segoe UI"',
+              'Roboto',
+              'sans-serif',
+            ].join(','),
+          },
+          spacing: 4, // Base unit: 4px
+        });
+      </signature>
+      <path>lib/theme.ts</path>
+    </interface>
+    <interface>
+      <name>ThemeProvider Integration</name>
+      <kind>React Component Pattern</kind>
+      <signature>
+        // app/layout.tsx
+        import { ThemeProvider } from '@mui/material/styles';
+        import CssBaseline from '@mui/material/CssBaseline';
+        import { theme } from '@/lib/theme';
+
+        export default function RootLayout({ children }) {
+          return (
+            &lt;html lang="en"&gt;
+              &lt;body&gt;
+                &lt;ThemeProvider theme={theme}&gt;
+                  &lt;CssBaseline /&gt;
+                  {children}
+                &lt;/ThemeProvider&gt;
+              &lt;/body&gt;
+            &lt;/html&gt;
+          );
+        }
+      </signature>
+      <path>app/layout.tsx</path>
+    </interface>
+    <interface>
+      <name>Button Component Wrapper</name>
+      <kind>React Component Pattern</kind>
+      <signature>
+        // components/ui/Button.tsx
+        import MuiButton from '@mui/material/Button';
+
+        export function Button({ variant = 'contained', ...props }) {
+          return &lt;MuiButton variant={variant} {...props} /&gt;;
+        }
+
+        // Variants: 'contained' (primary), 'outlined' (secondary), 'text' (tertiary)
+        // Color prop for destructive: color="error"
+      </signature>
+      <path>components/ui/Button.tsx</path>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      This project uses Playwright for E2E testing (already configured). Unit tests with Vitest will be configured in future stories. For this story, focus on E2E tests for UI component rendering and accessibility. Test patterns from existing tests in tests/e2e/ show:
+
+      - Use @playwright/test framework
+      - Test files named *.spec.ts
+      - Priority tags: @P0 (critical), @P1 (high priority)
+      - Accessibility testing with Playwright's accessibility features
+      - Responsive testing at different viewport sizes
+      - Component rendering verification
+      - Theme application verification
+    </standards>
+    <locations>
+      - tests/e2e/ - E2E tests using Playwright (already exists with example tests)
+      - Future: tests/unit/ - Unit tests using Vitest (to be configured in later stories)
+    </locations>
+    <ideas>
+      <test ac="Basic components">
+        - Test MUI components render correctly after installation
+        - Verify ThemeProvider is applied globally
+        - Test Button variants render with correct styles (primary, secondary, tertiary, destructive)
+        - Test Input component renders with label, help text, error states
+        - Test Card component renders with correct variants (default, outlined, elevated)
+      </test>
+      <test ac="Color palette">
+        - Verify theme colors match exact hex codes from UX spec
+        - Test waste categorization colors are accessible (Red #ef4444, Yellow #f59e0b, Green #10b981)
+        - Verify color contrast ratios meet WCAG AA standards (4.5:1 minimum)
+        - Test colors display correctly in light and dark modes (if applicable)
+      </test>
+      <test ac="Typography system">
+        - Verify system font stack is applied globally
+        - Test typography scale renders correctly (H1-H4, body, small, tiny)
+        - Verify font weights are correct (400, 500, 600, 700)
+        - Test line heights (1.5 for body, 1.2 for headings)
+      </test>
+      <test ac="Responsive layout utilities">
+        - Test Header component responsive behavior (hamburger menu for mobile)
+        - Test Sidebar component collapses on mobile (drawer behavior)
+        - Test MainContent responsive grid at different breakpoints
+        - Verify layout works at Desktop (≥1024px), Tablet (768-1023px), Mobile (&lt;768px)
+      </test>
+      <test ac="WCAG AA accessibility">
+        - Run Playwright accessibility audit on all components
+        - Test keyboard navigation (Tab, Enter, Space through all interactive elements)
+        - Verify focus indicators are visible (2px outline, #2563eb color)
+        - Test screen reader support (ARIA labels present and correct)
+        - Verify touch targets are minimum 44px × 44px for mobile
+        - Test color contrast ratios with automated tools
+      </test>
+      <test ac="Consistent branding">
+        - Verify app metadata updated: title "Yamazumi"
+        - Verify description: "Video-based work element analysis tool for manufacturing"
+        - Test theme is applied globally across all pages
+      </test>
+    </ideas>
+  </tests>
+</story-context>
