@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yamazumi - Upload Options Comparison</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+            background: #f5f5f5;
+            color: #1a1a1a;
+            line-height: 1.6;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 3rem;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .option-card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .option-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #1e293b;
+        }
+
+        .option-description {
+            color: #64748b;
+            margin-bottom: 1.5rem;
+        }
+
+        .mockup {
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            overflow: hidden;
+            background: white;
+        }
+
+        .mockup-nav {
+            background: #1e293b;
+            color: white;
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .mockup-nav-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .mockup-nav-items {
+            display: flex;
+            gap: 2rem;
+            font-size: 0.9rem;
+        }
+
+        .mockup-nav-item {
+            opacity: 0.8;
+        }
+
+        .mockup-nav-item.active {
+            opacity: 1;
+            font-weight: 500;
+        }
+
+        .mockup-content {
+            padding: 2rem;
+        }
+
+        .layout-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .video-section {
+            background: #000;
+            border-radius: 6px;
+            padding: 2rem;
+            min-height: 380px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            margin-bottom: 1rem;
+        }
+
+        .timeline {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .timeline-bar {
+            height: 32px;
+            background: #e2e8f0;
+            border-radius: 4px;
+        }
+
+        .sidebar {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            padding: 1rem;
+            max-height: 730px;
+            overflow-y: auto;
+        }
+
+        /* Option A: Button + Modal */
+        .upload-button {
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            margin-bottom: 1rem;
+        }
+
+        .upload-button:hover {
+            background: #1e40af;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+        }
+
+        .modal-header {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .upload-area {
+            border: 2px dashed #cbd5e1;
+            border-radius: 8px;
+            padding: 3rem 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: #f8fafc;
+        }
+
+        .upload-area:hover {
+            border-color: #2563eb;
+            background: #eff6ff;
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .upload-text {
+            font-size: 1.1rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: #1e293b;
+        }
+
+        .upload-hint {
+            font-size: 0.9rem;
+            color: #64748b;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #64748b;
+        }
+
+        /* Option B: Upload Area on Screen */
+        .upload-area-large {
+            border: 2px dashed #cbd5e1;
+            border-radius: 8px;
+            padding: 4rem 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: #f8fafc;
+            min-height: 300px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .upload-area-large:hover {
+            border-color: #2563eb;
+            background: #eff6ff;
+        }
+
+        .upload-area-large.has-video {
+            border: none;
+            background: #000;
+            padding: 0;
+            min-height: 380px;
+        }
+
+        .pros-cons {
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .pros-cons h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: #1e293b;
+        }
+
+        .pros-cons ul {
+            list-style: none;
+            margin-left: 0;
+        }
+
+        .pros-cons li {
+            padding: 0.5rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+            color: #475569;
+        }
+
+        .pros-cons li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #10b981;
+            font-weight: bold;
+        }
+
+        .pros-cons.cons li:before {
+            content: "⚠";
+            color: #f59e0b;
+        }
+
+        .comparison-note {
+            background: #eff6ff;
+            border: 1px solid #2563eb;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .comparison-note h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: #1e40af;
+        }
+
+        .comparison-note p {
+            color: #475569;
+            line-height: 1.8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📤 Upload Options Comparison</h1>
+        <p class="subtitle">Two approaches for video upload in the analysis interface</p>
+
+        <div class="options-grid">
+            <!-- Option A: Button + Modal -->
+            <div class="option-card">
+                <div class="option-title">Option A: Upload Button + Modal</div>
+                <div class="option-description">Clean interface with upload triggered by button, opens modal overlay</div>
+
+                <div class="mockup">
+                    <div class="mockup-nav">
+                        <div class="mockup-nav-title">Yamazumi</div>
+                        <div class="mockup-nav-items">
+                            <span class="mockup-nav-item active">Analysis</span>
+                            <span class="mockup-nav-item">Charts</span>
+                            <span class="mockup-nav-item">Settings</span>
+                        </div>
+                    </div>
+                    <div class="mockup-content">
+                        <div class="layout-grid">
+                            <div>
+                                <button class="upload-button">📤 Upload Video</button>
+                                <div class="video-section" style="background: #f8fafc; color: #64748b; border: 2px dashed #cbd5e1;">
+                                    <div style="text-align: center;">
+                                        <div style="font-size: 2rem; margin-bottom: 0.5rem;">📹</div>
+                                        <div>No video uploaded</div>
+                                    </div>
+                                </div>
+                                <div class="timeline">
+                                    <div class="timeline-bar"></div>
+                                </div>
+                            </div>
+                            <div class="sidebar">
+                                <div style="text-align: center; color: #64748b; padding: 2rem;">
+                                    Work elements will appear here after analysis
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 1.5rem; padding: 1rem; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0;">
+                    <div style="font-weight: 600; margin-bottom: 0.5rem;">Modal Overlay (appears when button clicked):</div>
+                    <div style="position: relative; background: white; border-radius: 8px; padding: 2rem; border: 2px solid #2563eb;">
+                        <button class="modal-close">×</button>
+                        <div class="modal-header">Upload Video</div>
+                        <div class="upload-area">
+                            <div class="upload-icon">📤</div>
+                            <div class="upload-text">Drag and drop video here</div>
+                            <div class="upload-hint">or click to browse</div>
+                            <div class="upload-hint" style="margin-top: 1rem; font-size: 0.85rem;">MP4, MOV • 30s - 10min</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pros-cons">
+                    <h3>Pros:</h3>
+                    <ul>
+                        <li>Clean, uncluttered interface</li>
+                        <li>Modal focuses attention on upload</li>
+                        <li>Familiar pattern (users expect modals)</li>
+                        <li>Easy to add upload progress in modal</li>
+                    </ul>
+                </div>
+
+                <div class="pros-cons cons">
+                    <h3>Considerations:</h3>
+                    <ul>
+                        <li>Extra click to start (button → modal)</li>
+                        <li>Modal overlay might feel like extra step</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Option B: Upload Area on Screen -->
+            <div class="option-card">
+                <div class="option-title">Option B: Upload Area on Screen</div>
+                <div class="option-description">Upload area directly on analysis screen, transforms into video player</div>
+
+                <div class="mockup">
+                    <div class="mockup-nav">
+                        <div class="mockup-nav-title">Yamazumi</div>
+                        <div class="mockup-nav-items">
+                            <span class="mockup-nav-item active">Analysis</span>
+                            <span class="mockup-nav-item">Charts</span>
+                            <span class="mockup-nav-item">Settings</span>
+                        </div>
+                    </div>
+                    <div class="mockup-content">
+                        <div class="layout-grid">
+                            <div>
+                                <div class="upload-area-large">
+                                    <div class="upload-icon">📤</div>
+                                    <div class="upload-text">Drag and drop video here</div>
+                                    <div class="upload-hint">or click to browse</div>
+                                    <div class="upload-hint" style="margin-top: 1rem; font-size: 0.85rem;">MP4, MOV • 30s - 10min</div>
+                                </div>
+                                <div class="timeline" style="opacity: 0.5;">
+                                    <div class="timeline-bar"></div>
+                                </div>
+                            </div>
+                            <div class="sidebar">
+                                <div style="text-align: center; color: #64748b; padding: 2rem;">
+                                    Work elements will appear here after analysis
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 1.5rem; padding: 1rem; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0;">
+                    <div style="font-weight: 600; margin-bottom: 0.5rem;">After Upload (transforms into video player):</div>
+                    <div class="upload-area-large has-video" style="color: white;">
+                        <div>Video Player (Ready to Play)</div>
+                    </div>
+                </div>
+
+                <div class="pros-cons">
+                    <h3>Pros:</h3>
+                    <ul>
+                        <li>One less click (direct drag-and-drop)</li>
+                        <li>Visual transformation is satisfying</li>
+                        <li>Upload area shows exactly where video will appear</li>
+                        <li>More immediate, less friction</li>
+                    </ul>
+                </div>
+
+                <div class="pros-cons cons">
+                    <h3>Considerations:</h3>
+                    <ul>
+                        <li>Takes up screen space when empty</li>
+                        <li>Might feel less "polished" than modal</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="comparison-note">
+            <h3>💡 Recommendation</h3>
+            <p>
+                <strong>Option B (Upload Area on Screen)</strong> aligns better with Direction 2 (Dense Dashboard) and provides a more direct, friction-free experience. 
+                The visual transformation from upload area to video player is satisfying and shows users exactly where their video will appear. 
+                For a tool focused on speed and efficiency (15-minute goal), reducing clicks and friction is valuable.
+            </p>
+        </div>
+    </div>
+</body>
+</html>

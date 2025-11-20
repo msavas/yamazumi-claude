@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yamazumi - Ghost vs Solid Visual States</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+            background: #f5f5f5;
+            color: #1a1a1a;
+            line-height: 1.6;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            color: #1e293b;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: #64748b;
+            margin-bottom: 3rem;
+        }
+
+        .section {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #1e293b;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 0.5rem;
+        }
+
+        .section-description {
+            color: #64748b;
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .state-card {
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 1.5rem;
+            background: #f8fafc;
+        }
+
+        .state-label {
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .state-label.ghost {
+            color: #64748b;
+        }
+
+        .state-label.solid {
+            color: #1e293b;
+        }
+
+        .state-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .state-badge.ghost {
+            background: #e2e8f0;
+            color: #64748b;
+        }
+
+        .state-badge.solid {
+            background: #dbeafe;
+            color: #2563eb;
+        }
+
+        /* Timeline Component */
+        .timeline-container {
+            background: #1e293b;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .timeline {
+            position: relative;
+            height: 60px;
+            background: #334155;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .timeline-segment {
+            position: absolute;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .timeline-segment:hover {
+            filter: brightness(1.1);
+        }
+
+        /* Ghost State */
+        .timeline-segment.ghost {
+            opacity: 0.5;
+            border: 2px dashed;
+            border-left: none;
+            border-right: none;
+        }
+
+        .timeline-segment.ghost.waste {
+            background: rgba(239, 68, 68, 0.2);
+            border-color: rgba(239, 68, 68, 0.5);
+        }
+
+        .timeline-segment.ghost.nva {
+            background: rgba(245, 158, 11, 0.2);
+            border-color: rgba(245, 158, 11, 0.5);
+        }
+
+        .timeline-segment.ghost.value {
+            background: rgba(16, 185, 129, 0.2);
+            border-color: rgba(16, 185, 129, 0.5);
+        }
+
+        /* Solid State */
+        .timeline-segment.solid {
+            opacity: 1.0;
+            border: 2px solid;
+            border-left: none;
+            border-right: none;
+        }
+
+        .timeline-segment.solid.waste {
+            background: #ef4444;
+            border-color: #ef4444;
+        }
+
+        .timeline-segment.solid.nva {
+            background: #f59e0b;
+            border-color: #f59e0b;
+        }
+
+        .timeline-segment.solid.value {
+            background: #10b981;
+            border-color: #10b981;
+        }
+
+        .confidence-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            width: 20px;
+            height: 20px;
+            background: #fbbf24;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: white;
+            border: 2px solid white;
+        }
+
+        /* Chart Segments */
+        .chart-container {
+            margin-bottom: 1rem;
+        }
+
+        .chart-bar {
+            display: flex;
+            height: 40px;
+            margin-bottom: 0.5rem;
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .chart-segment {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .chart-segment:hover {
+            filter: brightness(1.1);
+        }
+
+        .chart-segment.ghost {
+            opacity: 0.5;
+            border: 2px dashed;
+            border-top: none;
+            border-bottom: none;
+        }
+
+        .chart-segment.solid {
+            opacity: 1.0;
+            border: 2px solid;
+            border-top: none;
+            border-bottom: none;
+        }
+
+        .chart-segment.ghost.waste {
+            background: rgba(239, 68, 68, 0.2);
+            border-color: rgba(239, 68, 68, 0.5);
+        }
+
+        .chart-segment.ghost.nva {
+            background: rgba(245, 158, 11, 0.2);
+            border-color: rgba(245, 158, 11, 0.5);
+        }
+
+        .chart-segment.ghost.value {
+            background: rgba(16, 185, 129, 0.2);
+            border-color: rgba(16, 185, 129, 0.5);
+        }
+
+        .chart-segment.solid.waste {
+            background: #ef4444;
+            border-color: #ef4444;
+        }
+
+        .chart-segment.solid.nva {
+            background: #f59e0b;
+            border-color: #f59e0b;
+        }
+
+        .chart-segment.solid.value {
+            background: #10b981;
+            border-color: #10b981;
+        }
+
+        /* Work Element List */
+        .work-element-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .work-element-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .work-element-item:hover {
+            background: #f1f5f9;
+        }
+
+        .work-element-item.ghost {
+            opacity: 0.5;
+            border: 2px dashed #cbd5e1;
+            background: #f8fafc;
+        }
+
+        .work-element-item.solid {
+            opacity: 1.0;
+            border: 2px solid #e2e8f0;
+            background: white;
+        }
+
+        .element-name {
+            flex: 1;
+            font-weight: 500;
+            color: #1e293b;
+        }
+
+        .element-breakdown {
+            display: flex;
+            gap: 0.5rem;
+            margin-left: 1rem;
+        }
+
+        .breakdown-badge {
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: white;
+        }
+
+        .breakdown-badge.ghost {
+            opacity: 0.5;
+            border: 1px dashed;
+        }
+
+        .breakdown-badge.solid {
+            opacity: 1.0;
+            border: 1px solid;
+        }
+
+        .breakdown-badge.waste {
+            background: rgba(239, 68, 68, 0.2);
+            border-color: rgba(239, 68, 68, 0.5);
+            color: #991b1b;
+        }
+
+        .breakdown-badge.solid.waste {
+            background: #ef4444;
+            border-color: #ef4444;
+            color: white;
+        }
+
+        .breakdown-badge.nva {
+            background: rgba(245, 158, 11, 0.2);
+            border-color: rgba(245, 158, 11, 0.5);
+            color: #92400e;
+        }
+
+        .breakdown-badge.solid.nva {
+            background: #f59e0b;
+            border-color: #f59e0b;
+            color: white;
+        }
+
+        .breakdown-badge.value {
+            background: rgba(16, 185, 129, 0.2);
+            border-color: rgba(16, 185, 129, 0.5);
+            color: #065f46;
+        }
+
+        .breakdown-badge.solid.value {
+            background: #10b981;
+            border-color: #10b981;
+            color: white;
+        }
+
+        .element-duration {
+            font-size: 0.9rem;
+            color: #64748b;
+            margin-left: 1rem;
+        }
+
+        /* Legend */
+        .legend {
+            display: flex;
+            gap: 2rem;
+            padding: 1rem;
+            background: #f8fafc;
+            border-radius: 8px;
+            margin-top: 1rem;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .legend-color {
+            width: 24px;
+            height: 24px;
+            border-radius: 4px;
+        }
+
+        .legend-color.waste {
+            background: #ef4444;
+        }
+
+        .legend-color.nva {
+            background: #f59e0b;
+        }
+
+        .legend-color.value {
+            background: #10b981;
+        }
+
+        .info-box {
+            background: #f8fafc;
+            border-left: 4px solid #2563eb;
+            padding: 1.5rem;
+            margin-top: 2rem;
+            border-radius: 4px;
+        }
+
+        .info-title {
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 0.75rem;
+            font-size: 1.1rem;
+        }
+
+        .info-text {
+            color: #64748b;
+            font-size: 0.95rem;
+            line-height: 1.8;
+        }
+
+        .info-text ul {
+            margin-left: 1.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .info-text li {
+            margin-bottom: 0.5rem;
+        }
+
+        .highlight {
+            background: #fef3c7;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-weight: 500;
+        }
+
+        .mockup-nav {
+            background: #1e293b;
+            color: white;
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 8px 8px 0 0;
+        }
+
+        .mockup-nav-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .mockup-content {
+            padding: 1.5rem;
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Ghost vs Solid Visual States</h1>
+        <p class="subtitle">Visual distinction between unverified AI suggestions and user-verified data</p>
+
+        <!-- Timeline Component -->
+        <div class="section">
+            <h2 class="section-title">1. Video Timeline Component</h2>
+            <p class="section-description">Timeline segments show ghost state for unverified AI results and solid state for verified/user-overridden data</p>
+            
+            <div class="comparison-grid">
+                <div class="state-card">
+                    <div class="state-label ghost">
+                        <span class="state-badge ghost">Ghost State</span>
+                        <span>Unverified AI Results</span>
+                    </div>
+                    <div class="mockup-content">
+                        <div class="timeline-container">
+                            <div class="timeline">
+                                <div class="timeline-segment ghost waste" style="left: 0%; width: 15%;">
+                                    Waste
+                                    <div class="confidence-badge">?</div>
+                                </div>
+                                <div class="timeline-segment ghost nva" style="left: 15%; width: 20%;">
+                                    NVA
+                                </div>
+                                <div class="timeline-segment ghost value" style="left: 35%; width: 30%;">
+                                    Value
+                                </div>
+                                <div class="timeline-segment ghost waste" style="left: 65%; width: 10%;">
+                                    Waste
+                                    <div class="confidence-badge">?</div>
+                                </div>
+                                <div class="timeline-segment ghost nva" style="left: 75%; width: 15%;">
+                                    NVA
+                                </div>
+                                <div class="timeline-segment ghost value" style="left: 90%; width: 10%;">
+                                    Value
+                                </div>
+                            </div>
+                        </div>
+                        <div style="font-size: 0.85rem; color: #64748b; margin-top: 0.5rem;">
+                            • 50% opacity<br>
+                            • Dashed border<br>
+                            • "?" icon if confidence &lt; 0.7
+                        </div>
+                    </div>
+                </div>
+
+                <div class="state-card">
+                    <div class="state-label solid">
+                        <span class="state-badge solid">Solid State</span>
+                        <span>Verified/User Override</span>
+                    </div>
+                    <div class="mockup-content">
+                        <div class="timeline-container">
+                            <div class="timeline">
+                                <div class="timeline-segment solid waste" style="left: 0%; width: 15%;">
+                                    Waste
+                                </div>
+                                <div class="timeline-segment solid nva" style="left: 15%; width: 20%;">
+                                    NVA
+                                </div>
+                                <div class="timeline-segment solid value" style="left: 35%; width: 30%;">
+                                    Value
+                                </div>
+                                <div class="timeline-segment solid waste" style="left: 65%; width: 10%;">
+                                    Waste
+                                </div>
+                                <div class="timeline-segment solid nva" style="left: 75%; width: 15%;">
+                                    NVA
+                                </div>
+                                <div class="timeline-segment solid value" style="left: 90%; width: 10%;">
+                                    Value
+                                </div>
+                            </div>
+                        </div>
+                        <div style="font-size: 0.85rem; color: #64748b; margin-top: 0.5rem;">
+                            • 100% opacity<br>
+                            • Solid border<br>
+                            • No "?" icon
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chart Segments -->
+        <div class="section">
+            <h2 class="section-title">2. Stacked Bar Chart Segments</h2>
+            <p class="section-description">Chart segments use ghost/solid states to show verification status</p>
+            
+            <div class="comparison-grid">
+                <div class="state-card">
+                    <div class="state-label ghost">
+                        <span class="state-badge ghost">Ghost State</span>
+                        <span>Unverified AI Results</span>
+                    </div>
+                    <div class="mockup-content">
+                        <div class="chart-container">
+                            <div class="chart-bar">
+                                <div class="chart-segment ghost waste" style="width: 25%;">
+                                    Waste
+                                    <div class="confidence-badge">?</div>
+                                </div>
+                                <div class="chart-segment ghost nva" style="width: 30%;">
+                                    NVA
+                                </div>
+                                <div class="chart-segment ghost value" style="width: 45%;">
+                                    Value
+                                </div>
+                            </div>
+                            <div style="font-size: 0.85rem; color: #64748b; margin-top: 0.5rem; text-align: center;">
+                                "Install Bolt" - 12.5s
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="state-card">
+                    <div class="state-label solid">
+                        <span class="state-badge solid">Solid State</span>
+                        <span>Verified/User Override</span>
+                    </div>
+                    <div class="mockup-content">
+                        <div class="chart-container">
+                            <div class="chart-bar">
+                                <div class="chart-segment solid waste" style="width: 25%;">
+                                    Waste
+                                </div>
+                                <div class="chart-segment solid nva" style="width: 30%;">
+                                    NVA
+                                </div>
+                                <div class="chart-segment solid value" style="width: 45%;">
+                                    Value
+                                </div>
+                            </div>
+                            <div style="font-size: 0.85rem; color: #64748b; margin-top: 0.5rem; text-align: center;">
+                                "Install Bolt" - 12.5s
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Work Element List -->
+        <div class="section">
+            <h2 class="section-title">3. Work Element List Items</h2>
+            <p class="section-description">List items show ghost/solid states with breakdown badges</p>
+            
+            <div class="comparison-grid">
+                <div class="state-card">
+                    <div class="state-label ghost">
+                        <span class="state-badge ghost">Ghost State</span>
+                        <span>Unverified AI Results</span>
+                    </div>
+                    <div class="mockup-content">
+                        <div class="work-element-list">
+                            <div class="work-element-item ghost">
+                                <div class="element-name">Install Bolt</div>
+                                <div class="element-breakdown">
+                                    <span class="breakdown-badge ghost waste">Waste</span>
+                                    <span class="breakdown-badge ghost nva">NVA</span>
+                                    <span class="breakdown-badge ghost value">Value</span>
+                                </div>
+                                <div class="element-duration">12.5s</div>
+                                <div class="confidence-badge">?</div>
+                            </div>
+                            <div class="work-element-item ghost">
+                                <div class="element-name">Position Part</div>
+                                <div class="element-breakdown">
+                                    <span class="breakdown-badge ghost waste">Waste</span>
+                                    <span class="breakdown-badge ghost nva">NVA</span>
+                                </div>
+                                <div class="element-duration">8.2s</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="state-card">
+                    <div class="state-label solid">
+                        <span class="state-badge solid">Solid State</span>
+                        <span>Verified/User Override</span>
+                    </div>
+                    <div class="mockup-content">
+                        <div class="work-element-list">
+                            <div class="work-element-item solid">
+                                <div class="element-name">Install Bolt</div>
+                                <div class="element-breakdown">
+                                    <span class="breakdown-badge solid waste">Waste</span>
+                                    <span class="breakdown-badge solid nva">NVA</span>
+                                    <span class="breakdown-badge solid value">Value</span>
+                                </div>
+                                <div class="element-duration">12.5s</div>
+                            </div>
+                            <div class="work-element-item solid">
+                                <div class="element-name">Position Part</div>
+                                <div class="element-breakdown">
+                                    <span class="breakdown-badge solid waste">Waste</span>
+                                    <span class="breakdown-badge solid nva">NVA</span>
+                                </div>
+                                <div class="element-duration">8.2s</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Combined View -->
+        <div class="section">
+            <h2 class="section-title">4. Combined View: Mixed States</h2>
+            <p class="section-description">Real-world scenario showing both ghost and solid states together</p>
+            
+            <div class="mockup-content">
+                <div style="margin-bottom: 2rem;">
+                    <div class="timeline-container">
+                        <div class="timeline">
+                            <div class="timeline-segment solid waste" style="left: 0%; width: 10%;">
+                                Waste
+                            </div>
+                            <div class="timeline-segment solid nva" style="left: 10%; width: 15%;">
+                                NVA
+                            </div>
+                            <div class="timeline-segment solid value" style="left: 25%; width: 25%;">
+                                Value
+                            </div>
+                            <div class="timeline-segment ghost waste" style="left: 50%; width: 12%;">
+                                Waste
+                                <div class="confidence-badge">?</div>
+                            </div>
+                            <div class="timeline-segment ghost nva" style="left: 62%; width: 18%;">
+                                NVA
+                            </div>
+                            <div class="timeline-segment ghost value" style="left: 80%; width: 20%;">
+                                Value
+                            </div>
+                        </div>
+                    </div>
+                    <div style="font-size: 0.85rem; color: #64748b; margin-top: 0.5rem; text-align: center;">
+                        Left: Verified | Right: Unverified AI suggestions
+                    </div>
+                </div>
+
+                <div class="work-element-list">
+                    <div class="work-element-item solid">
+                        <div class="element-name">Install Bolt</div>
+                        <div class="element-breakdown">
+                            <span class="breakdown-badge solid waste">Waste</span>
+                            <span class="breakdown-badge solid nva">NVA</span>
+                            <span class="breakdown-badge solid value">Value</span>
+                        </div>
+                        <div class="element-duration">12.5s</div>
+                    </div>
+                    <div class="work-element-item ghost">
+                        <div class="element-name">Position Part</div>
+                        <div class="element-breakdown">
+                            <span class="breakdown-badge ghost waste">Waste</span>
+                            <span class="breakdown-badge ghost nva">NVA</span>
+                        </div>
+                        <div class="element-duration">8.2s</div>
+                        <div class="confidence-badge">?</div>
+                    </div>
+                    <div class="work-element-item solid">
+                        <div class="element-name">Tighten Screw</div>
+                        <div class="element-breakdown">
+                            <span class="breakdown-badge solid nva">NVA</span>
+                            <span class="breakdown-badge solid value">Value</span>
+                        </div>
+                        <div class="element-duration">6.8s</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Legend -->
+        <div class="section">
+            <div class="legend">
+                <div class="legend-item">
+                    <div class="legend-color waste"></div>
+                    <span>Waste (Red)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color nva"></div>
+                    <span>Non-Value-Added (Yellow)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color value"></div>
+                    <span>Value-Added (Green)</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Info Box -->
+        <div class="info-box">
+            <div class="info-title">Visual State Specifications</div>
+            <div class="info-text">
+                <p><strong>Ghost State (Unverified AI Results):</strong></p>
+                <ul>
+                    <li>Opacity: <span class="highlight">50%</span> (`opacity: 0.5`)</li>
+                    <li>Border: <span class="highlight">Dashed</span> (`border-style: dashed`, 2px width)</li>
+                    <li>Low Confidence Indicator: <span class="highlight">"?" icon badge</span> appears if confidence &lt; 0.7</li>
+                    <li>Applied to: Timeline segments, chart segments, work element list items</li>
+                    <li>Source: `AI_ESTIMATE`, `isVerified: false`</li>
+                </ul>
+                <p style="margin-top: 1rem;"><strong>Solid State (Verified/User Override):</strong></p>
+                <ul>
+                    <li>Opacity: <span class="highlight">100%</span> (`opacity: 1.0`)</li>
+                    <li>Border: <span class="highlight">Solid</span> (`border-style: solid`, 2px width)</li>
+                    <li>No "?" icon badge</li>
+                    <li>Applied to: All user-verified or user-overridden segments</li>
+                    <li>Source: `USER_OVERRIDE` or `AI_ESTIMATE` with `isVerified: true`</li>
+                </ul>
+                <p style="margin-top: 1rem;"><strong>Rationale:</strong> Ghost state signals "this is AI's best guess, please verify" while solid state signals "this is confirmed data." The visual distinction helps users quickly identify what needs review and builds trust in AI accuracy.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

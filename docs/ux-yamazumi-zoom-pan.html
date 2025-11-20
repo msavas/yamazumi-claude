@@ -1,0 +1,1428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yamazumi - Zoom & Pan for Large Factories</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+            background: #f5f5f5;
+            color: #1a1a1a;
+            line-height: 1.6;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1800px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            color: #1e293b;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: #64748b;
+            margin-bottom: 3rem;
+        }
+
+        .section {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #1e293b;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 0.5rem;
+        }
+
+        .section-description {
+            color: #64748b;
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
+        }
+
+        .mockup {
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            overflow: hidden;
+            background: white;
+        }
+
+        .mockup-nav {
+            background: #1e293b;
+            color: white;
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .mockup-nav-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .mockup-nav-items {
+            display: flex;
+            gap: 2rem;
+            font-size: 0.9rem;
+        }
+
+        .mockup-nav-item {
+            opacity: 0.8;
+        }
+
+        .mockup-nav-item.active {
+            opacity: 1;
+            font-weight: 500;
+        }
+
+        .toolbar {
+            background: #f8fafc;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .toolbar-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .toolbar-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .zoom-controls {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: white;
+            padding: 0.5rem;
+            border-radius: 6px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .zoom-button {
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: transparent;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: #64748b;
+            transition: all 0.2s ease;
+        }
+
+        .zoom-button:hover {
+            background: #f1f5f9;
+            color: #1e293b;
+        }
+
+        .zoom-slider {
+            width: 120px;
+            height: 4px;
+            background: #e2e8f0;
+            border-radius: 2px;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .zoom-slider-track {
+            height: 100%;
+            background: #2563eb;
+            border-radius: 2px;
+            width: 50%;
+        }
+
+        .zoom-level {
+            font-size: 0.85rem;
+            color: #64748b;
+            min-width: 60px;
+            text-align: center;
+        }
+
+        .fit-button {
+            padding: 0.5rem 1rem;
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            color: #1e293b;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .fit-button:hover {
+            background: #f1f5f9;
+            border-color: #cbd5e1;
+        }
+
+        .view-toggle {
+            display: flex;
+            gap: 0.5rem;
+            background: white;
+            padding: 0.25rem;
+            border-radius: 6px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .toggle-button {
+            padding: 0.5rem 1rem;
+            border: none;
+            background: transparent;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #64748b;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .toggle-button.active {
+            background: #2563eb;
+            color: white;
+        }
+
+        .mockup-content {
+            position: relative;
+            background: #f8fafc;
+        }
+
+        /* Minimap */
+        .minimap-container {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 0.5rem;
+            z-index: 100;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .minimap-title {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+
+        .minimap {
+            width: 200px;
+            height: 120px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 4px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .minimap-stations {
+            display: flex;
+            gap: 1px;
+            height: 100%;
+        }
+
+        .minimap-station {
+            flex: 1;
+            background: #cbd5e1;
+            border-radius: 1px;
+        }
+
+        .minimap-station.highlight {
+            background: #2563eb;
+        }
+
+        .minimap-viewport {
+            position: absolute;
+            border: 2px solid #2563eb;
+            background: rgba(37, 99, 235, 0.1);
+            pointer-events: none;
+        }
+
+        /* Chart Container with Zoom */
+        .chart-wrapper {
+            position: relative;
+            overflow: hidden;
+            height: 600px;
+        }
+
+        .chart-container {
+            position: relative;
+        }
+
+        .chart-container {
+            padding: 2rem;
+            transition: transform 0.3s ease;
+            transform-origin: top left;
+        }
+
+        .yamazumi-chart {
+            display: flex;
+            align-items: flex-end;
+            gap: 0.75rem;
+            min-height: 400px;
+        }
+
+        .station-column {
+            flex: 1;
+            min-width: 60px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .station-column:hover {
+            transform: translateY(-4px);
+        }
+
+        .station-column.highlight {
+            outline: 3px solid #2563eb;
+            outline-offset: 4px;
+            border-radius: 4px;
+        }
+
+        .station-bar {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            border-radius: 4px 4px 0 0;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .station-segment {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: 500;
+            color: white;
+            min-height: 20px;
+            transition: all 0.2s ease;
+        }
+
+        .station-segment.waste {
+            background: #ef4444;
+        }
+
+        .station-segment.nva {
+            background: #f59e0b;
+        }
+
+        .station-segment.value {
+            background: #10b981;
+        }
+
+        .station-label {
+            margin-top: 0.5rem;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: #1e293b;
+            text-align: center;
+        }
+
+        .station-total {
+            margin-top: 0.25rem;
+            font-size: 0.75rem;
+            color: #64748b;
+            text-align: center;
+        }
+
+        .bottleneck-indicator {
+            position: absolute;
+            top: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 6px solid transparent;
+            border-right: 6px solid transparent;
+            border-top: 8px solid #ef4444;
+        }
+
+        /* Takt Time Line */
+        .takt-time-line {
+            position: absolute;
+            left: 0;
+            right: 0;
+            border-top: 2px dashed #ef4444;
+            z-index: 50;
+            cursor: grab;
+            transition: border-top-width 0.2s ease;
+        }
+
+        .takt-time-line:hover {
+            border-top-width: 3px;
+            cursor: grab;
+        }
+
+        .takt-time-line:active {
+            cursor: grabbing;
+        }
+
+        .takt-time-line.dragging {
+            border-top-width: 3px;
+            cursor: grabbing;
+            opacity: 0.9;
+        }
+
+        .takt-time-label {
+            position: absolute;
+            right: 0;
+            transform: translateY(-50%);
+            background: #ef4444;
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            white-space: nowrap;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            pointer-events: none;
+        }
+
+        .takt-time-label::after {
+            content: '';
+            position: absolute;
+            left: -4px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 0;
+            height: 0;
+            border-top: 4px solid transparent;
+            border-bottom: 4px solid transparent;
+            border-right: 4px solid #ef4444;
+        }
+
+        /* Zoomed Out View */
+        .zoomed-out .station-column {
+            min-width: 20px;
+        }
+
+        .zoomed-out .station-label {
+            font-size: 0.6rem;
+            transform: rotate(-45deg);
+            white-space: nowrap;
+        }
+
+        .zoomed-out .station-total {
+            font-size: 0.6rem;
+        }
+
+        .zoomed-out .station-segment {
+            font-size: 0.5rem;
+            min-height: 8px;
+        }
+
+        /* Zoomed In View */
+        .zoomed-in .station-column {
+            min-width: 100px;
+        }
+
+        .zoomed-in .station-label {
+            font-size: 0.9rem;
+        }
+
+        .zoomed-in .station-total {
+            font-size: 0.85rem;
+        }
+
+        .zoomed-in .station-segment {
+            font-size: 0.8rem;
+            min-height: 24px;
+        }
+
+        /* View States */
+        .view-state {
+            display: none;
+        }
+
+        .view-state.active {
+            display: block;
+        }
+
+        .legend {
+            display: flex;
+            gap: 2rem;
+            padding: 1rem 1.5rem;
+            background: white;
+            border-top: 1px solid #e2e8f0;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .legend-color {
+            width: 24px;
+            height: 24px;
+            border-radius: 4px;
+        }
+
+        .legend-color.waste {
+            background: #ef4444;
+        }
+
+        .legend-color.nva {
+            background: #f59e0b;
+        }
+
+        .legend-color.value {
+            background: #10b981;
+        }
+
+        .info-box {
+            background: #f8fafc;
+            border-left: 4px solid #2563eb;
+            padding: 1.5rem;
+            margin-top: 2rem;
+            border-radius: 4px;
+        }
+
+        .info-title {
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 0.75rem;
+            font-size: 1.1rem;
+        }
+
+        .info-text {
+            color: #64748b;
+            font-size: 0.95rem;
+            line-height: 1.8;
+        }
+
+        .info-text ul {
+            margin-left: 1.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .info-text li {
+            margin-bottom: 0.5rem;
+        }
+
+        .highlight {
+            background: #fef3c7;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-weight: 500;
+        }
+
+        .note-box {
+            background: #dbeafe;
+            border-left: 4px solid #2563eb;
+            padding: 1rem;
+            border-radius: 4px;
+            margin-top: 1rem;
+        }
+
+        .note-title {
+            font-weight: 600;
+            color: #1e40af;
+            margin-bottom: 0.5rem;
+        }
+
+        .note-text {
+            color: #1e3a8a;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Yamazumi Zoom & Pan for Large Factories</h1>
+        <p class="subtitle">See the full picture, then zoom in to focus on problem areas</p>
+
+        <!-- Zoomed Out View - See Everything -->
+        <div class="section">
+            <h2 class="section-title">1. Zoomed Out View - See All 50 Stations</h2>
+            <p class="section-description">Zoom out to see the entire factory at once. Perfect for identifying bottlenecks and understanding the full picture.</p>
+            
+            <div class="mockup">
+                <div class="mockup-nav">
+                    <div class="mockup-nav-title">Yamazumi</div>
+                    <div class="mockup-nav-items">
+                        <span class="mockup-nav-item">Analysis</span>
+                        <span class="mockup-nav-item active">Charts</span>
+                        <span class="mockup-nav-item">Upload</span>
+                    </div>
+                </div>
+                
+                <div class="toolbar">
+                    <div class="toolbar-left">
+                        <div class="view-toggle">
+                            <button class="toggle-button active">Waste/NVA/Value</button>
+                            <button class="toggle-button">Work Elements</button>
+                        </div>
+                    </div>
+                    <div class="toolbar-right">
+                        <div class="zoom-controls">
+                            <button class="zoom-button">−</button>
+                            <div class="zoom-slider">
+                                <div class="zoom-slider-track" style="width: 25%;"></div>
+                            </div>
+                            <button class="zoom-button">+</button>
+                            <div class="zoom-level">25%</div>
+                        </div>
+                        <button class="fit-button">Fit to Screen</button>
+                    </div>
+                </div>
+
+                <div class="mockup-content">
+                    <div class="minimap-container">
+                        <div class="minimap-title">Overview</div>
+                        <div class="minimap">
+                            <div class="minimap-stations">
+                                <!-- 50 stations in minimap -->
+                                <div class="minimap-station"></div>
+                                <div class="minimap-station highlight"></div>
+                                <div class="minimap-station"></div>
+                                <div class="minimap-station"></div>
+                                <div class="minimap-station highlight"></div>
+                                <div class="minimap-station"></div>
+                                <div class="minimap-station"></div>
+                                <div class="minimap-station"></div>
+                                <div class="minimap-station highlight"></div>
+                                <div class="minimap-station"></div>
+                                <div class="minimap-station"></div>
+                                <div class="minimap-station"></div>
+                                <div class="minimap-station"></div>
+                                <div class="minimap-station"></div>
+                                <div class="minimap-station"></div>
+                                <div class="minimap-station"></div>
+                                <div class="minimap-station"></div>
+                                <div class="minimap-station"></div>
+                                <div class="minimap-station"></div>
+                                <div class="minimap-station"></div>
+                                <div class="minimap-station"></div>
+                                <div class="minimap-station"></div>
+                                <div class="minimap-station"></div>
+                                <div class="minimap-station"></div>
+                                <div class="minimap-station"></div>
+                                <div class="minimap-station"></div>
+                                <div class="minimap-station"></div>
+                                <div class="minimap-station"></div>
+                                <div class="minimap-station"></div>
+                                <div class="minimap-station"></div>
+                                <div class="minimap-station"></div>
+                                <div class="minimap-station"></div>
+                                <div class="minimap-station"></div>
+                                <div class="minimap-station"></div>
+                                <div class="minimap-station"></div>
+                                <div class="minimap-station"></div>
+                                <div class="minimap-station"></div>
+                                <div class="minimap-station"></div>
+                                <div class="minimap-station"></div>
+                                <div class="minimap-station"></div>
+                                <div class="minimap-station"></div>
+                                <div class="minimap-station"></div>
+                                <div class="minimap-station"></div>
+                                <div class="minimap-station"></div>
+                                <div class="minimap-station"></div>
+                                <div class="minimap-station"></div>
+                                <div class="minimap-station"></div>
+                                <div class="minimap-station"></div>
+                                <div class="minimap-station"></div>
+                                <div class="minimap-station"></div>
+                                <div class="minimap-station"></div>
+                                <div class="minimap-station"></div>
+                                <div class="minimap-station"></div>
+                            </div>
+                            <div class="minimap-viewport" style="left: 0%; width: 100%; top: 0%; height: 100%;"></div>
+                        </div>
+                    </div>
+
+                    <div class="chart-wrapper">
+                        <div class="chart-container zoomed-out" style="transform: scale(0.25);">
+                            <!-- Takt Time Line -->
+                            <div class="takt-time-line" style="top: 180px;" title="Click to adjust takt time">
+                                <div class="takt-time-label">Takt Time: 45s</div>
+                            </div>
+                            <div class="yamazumi-chart">
+                                <!-- 50 stations shown compactly - generating many stations -->
+                                <div class="station-column">
+                                    <div class="station-bar" style="height: 72px;">
+                                        <div class="station-segment waste" style="height: 11px;"></div>
+                                        <div class="station-segment nva" style="height: 18px;"></div>
+                                        <div class="station-segment value" style="height: 43px;"></div>
+                                    </div>
+                                    <div class="station-label">S1</div>
+                                    <div class="station-total">45s</div>
+                                </div>
+                                <div class="station-column highlight">
+                                    <div class="bottleneck-indicator"></div>
+                                    <div class="station-bar" style="height: 85px;">
+                                        <div class="station-segment waste" style="height: 25px;"></div>
+                                        <div class="station-segment nva" style="height: 17px;"></div>
+                                        <div class="station-segment value" style="height: 43px;"></div>
+                                    </div>
+                                    <div class="station-label">S2</div>
+                                    <div class="station-total">53s</div>
+                                </div>
+                                <div class="station-column">
+                                    <div class="station-bar" style="height: 62px;">
+                                        <div class="station-segment waste" style="height: 6px;"></div>
+                                        <div class="station-segment nva" style="height: 18px;"></div>
+                                        <div class="station-segment value" style="height: 38px;"></div>
+                                    </div>
+                                    <div class="station-label">S3</div>
+                                    <div class="station-total">39s</div>
+                                </div>
+                                <div class="station-column">
+                                    <div class="station-bar" style="height: 66px;">
+                                        <div class="station-segment waste" style="height: 13px;"></div>
+                                        <div class="station-segment nva" style="height: 16px;"></div>
+                                        <div class="station-segment value" style="height: 37px;"></div>
+                                    </div>
+                                    <div class="station-label">S4</div>
+                                    <div class="station-total">41s</div>
+                                </div>
+                                <div class="station-column highlight">
+                                    <div class="bottleneck-indicator"></div>
+                                    <div class="station-bar" style="height: 80px;">
+                                        <div class="station-segment waste" style="height: 20px;"></div>
+                                        <div class="station-segment nva" style="height: 16px;"></div>
+                                        <div class="station-segment value" style="height: 44px;"></div>
+                                    </div>
+                                    <div class="station-label">S5</div>
+                                    <div class="station-total">50s</div>
+                                </div>
+                                <div class="station-column">
+                                    <div class="station-bar" style="height: 69px;">
+                                        <div class="station-segment waste" style="height: 12px;"></div>
+                                        <div class="station-segment nva" style="height: 15px;"></div>
+                                        <div class="station-segment value" style="height: 42px;"></div>
+                                    </div>
+                                    <div class="station-label">S6</div>
+                                    <div class="station-total">43s</div>
+                                </div>
+                                <div class="station-column">
+                                    <div class="station-bar" style="height: 78px;">
+                                        <div class="station-segment waste" style="height: 20px;"></div>
+                                        <div class="station-segment nva" style="height: 16px;"></div>
+                                        <div class="station-segment value" style="height: 42px;"></div>
+                                    </div>
+                                    <div class="station-label">S7</div>
+                                    <div class="station-total">49s</div>
+                                </div>
+                                <div class="station-column">
+                                    <div class="station-bar" style="height: 58px;">
+                                        <div class="station-segment waste" style="height: 5px;"></div>
+                                        <div class="station-segment nva" style="height: 17px;"></div>
+                                        <div class="station-segment value" style="height: 36px;"></div>
+                                    </div>
+                                    <div class="station-label">S8</div>
+                                    <div class="station-total">36s</div>
+                                </div>
+                                <div class="station-column highlight">
+                                    <div class="bottleneck-indicator"></div>
+                                    <div class="station-bar" style="height: 82px;">
+                                        <div class="station-segment waste" style="height: 25px;"></div>
+                                        <div class="station-segment nva" style="height: 16px;"></div>
+                                        <div class="station-segment value" style="height: 41px;"></div>
+                                    </div>
+                                    <div class="station-label">S9</div>
+                                    <div class="station-total">51s</div>
+                                </div>
+                                <div class="station-column">
+                                    <div class="station-bar" style="height: 64px;">
+                                        <div class="station-segment waste" style="height: 8px;"></div>
+                                        <div class="station-segment nva" style="height: 19px;"></div>
+                                        <div class="station-segment value" style="height: 37px;"></div>
+                                    </div>
+                                    <div class="station-label">S10</div>
+                                    <div class="station-total">40s</div>
+                                </div>
+                                <div class="station-column">
+                                    <div class="station-bar" style="height: 71px;">
+                                        <div class="station-segment waste" style="height: 14px;"></div>
+                                        <div class="station-segment nva" style="height: 14px;"></div>
+                                        <div class="station-segment value" style="height: 43px;"></div>
+                                    </div>
+                                    <div class="station-label">S11</div>
+                                    <div class="station-total">44s</div>
+                                </div>
+                                <div class="station-column">
+                                    <div class="station-bar" style="height: 67px;">
+                                        <div class="station-segment waste" style="height: 10px;"></div>
+                                        <div class="station-segment nva" style="height: 20px;"></div>
+                                        <div class="station-segment value" style="height: 37px;"></div>
+                                    </div>
+                                    <div class="station-label">S12</div>
+                                    <div class="station-total">42s</div>
+                                </div>
+                                <div class="station-column">
+                                    <div class="station-bar" style="height: 73px;">
+                                        <div class="station-segment waste" style="height: 15px;"></div>
+                                        <div class="station-segment nva" style="height: 15px;"></div>
+                                        <div class="station-segment value" style="height: 43px;"></div>
+                                    </div>
+                                    <div class="station-label">S13</div>
+                                    <div class="station-total">46s</div>
+                                </div>
+                                <div class="station-column">
+                                    <div class="station-bar" style="height: 61px;">
+                                        <div class="station-segment waste" style="height: 7px;"></div>
+                                        <div class="station-segment nva" style="height: 18px;"></div>
+                                        <div class="station-segment value" style="height: 36px;"></div>
+                                    </div>
+                                    <div class="station-label">S14</div>
+                                    <div class="station-total">38s</div>
+                                </div>
+                                <div class="station-column">
+                                    <div class="station-bar" style="height: 70px;">
+                                        <div class="station-segment waste" style="height: 11px;"></div>
+                                        <div class="station-segment nva" style="height: 17px;"></div>
+                                        <div class="station-segment value" style="height: 42px;"></div>
+                                    </div>
+                                    <div class="station-label">S15</div>
+                                    <div class="station-total">44s</div>
+                                </div>
+                                <div class="station-column">
+                                    <div class="station-bar" style="height: 65px;">
+                                        <div class="station-segment waste" style="height: 9px;"></div>
+                                        <div class="station-segment nva" style="height: 19px;"></div>
+                                        <div class="station-segment value" style="height: 37px;"></div>
+                                    </div>
+                                    <div class="station-label">S16</div>
+                                    <div class="station-total">41s</div>
+                                </div>
+                                <div class="station-column">
+                                    <div class="station-bar" style="height: 68px;">
+                                        <div class="station-segment waste" style="height: 12px;"></div>
+                                        <div class="station-segment nva" style="height: 16px;"></div>
+                                        <div class="station-segment value" style="height: 40px;"></div>
+                                    </div>
+                                    <div class="station-label">S17</div>
+                                    <div class="station-total">43s</div>
+                                </div>
+                                <div class="station-column">
+                                    <div class="station-bar" style="height: 63px;">
+                                        <div class="station-segment waste" style="height: 8px;"></div>
+                                        <div class="station-segment nva" style="height: 19px;"></div>
+                                        <div class="station-segment value" style="height: 36px;"></div>
+                                    </div>
+                                    <div class="station-label">S18</div>
+                                    <div class="station-total">39s</div>
+                                </div>
+                                <div class="station-column">
+                                    <div class="station-bar" style="height: 76px;">
+                                        <div class="station-segment waste" style="height: 19px;"></div>
+                                        <div class="station-segment nva" style="height: 15px;"></div>
+                                        <div class="station-segment value" style="height: 42px;"></div>
+                                    </div>
+                                    <div class="station-label">S19</div>
+                                    <div class="station-total">48s</div>
+                                </div>
+                                <div class="station-column">
+                                    <div class="station-bar" style="height: 59px;">
+                                        <div class="station-segment waste" style="height: 6px;"></div>
+                                        <div class="station-segment nva" style="height: 18px;"></div>
+                                        <div class="station-segment value" style="height: 35px;"></div>
+                                    </div>
+                                    <div class="station-label">S20</div>
+                                    <div class="station-total">37s</div>
+                                </div>
+                                <div class="station-column">
+                                    <div class="station-bar" style="height: 74px;">
+                                        <div class="station-segment waste" style="height: 15px;"></div>
+                                        <div class="station-segment nva" style="height: 15px;"></div>
+                                        <div class="station-segment value" style="height: 44px;"></div>
+                                    </div>
+                                    <div class="station-label">S21</div>
+                                    <div class="station-total">46s</div>
+                                </div>
+                                <div class="station-column">
+                                    <div class="station-bar" style="height: 66px;">
+                                        <div class="station-segment waste" style="height: 10px;"></div>
+                                        <div class="station-segment nva" style="height: 20px;"></div>
+                                        <div class="station-segment value" style="height: 36px;"></div>
+                                    </div>
+                                    <div class="station-label">S22</div>
+                                    <div class="station-total">41s</div>
+                                </div>
+                                <div class="station-column">
+                                    <div class="station-bar" style="height: 72px;">
+                                        <div class="station-segment waste" style="height: 14px;"></div>
+                                        <div class="station-segment nva" style="height: 14px;"></div>
+                                        <div class="station-segment value" style="height: 44px;"></div>
+                                    </div>
+                                    <div class="station-label">S23</div>
+                                    <div class="station-total">45s</div>
+                                </div>
+                                <div class="station-column">
+                                    <div class="station-bar" style="height: 60px;">
+                                        <div class="station-segment waste" style="height: 7px;"></div>
+                                        <div class="station-segment nva" style="height: 18px;"></div>
+                                        <div class="station-segment value" style="height: 35px;"></div>
+                                    </div>
+                                    <div class="station-label">S24</div>
+                                    <div class="station-total">38s</div>
+                                </div>
+                                <div class="station-column">
+                                    <div class="station-bar" style="height: 69px;">
+                                        <div class="station-segment waste" style="height: 11px;"></div>
+                                        <div class="station-segment nva" style="height: 17px;"></div>
+                                        <div class="station-segment value" style="height: 41px;"></div>
+                                    </div>
+                                    <div class="station-label">S25</div>
+                                    <div class="station-total">43s</div>
+                                </div>
+                                <div class="station-column">
+                                    <div class="station-bar" style="height: 64px;">
+                                        <div class="station-segment waste" style="height: 9px;"></div>
+                                        <div class="station-segment nva" style="height: 19px;"></div>
+                                        <div class="station-segment value" style="height: 36px;"></div>
+                                    </div>
+                                    <div class="station-label">S26</div>
+                                    <div class="station-total">40s</div>
+                                </div>
+                                <div class="station-column">
+                                    <div class="station-bar" style="height: 77px;">
+                                        <div class="station-segment waste" style="height: 19px;"></div>
+                                        <div class="station-segment nva" style="height: 15px;"></div>
+                                        <div class="station-segment value" style="height: 43px;"></div>
+                                    </div>
+                                    <div class="station-label">S27</div>
+                                    <div class="station-total">48s</div>
+                                </div>
+                                <div class="station-column">
+                                    <div class="station-bar" style="height: 62px;">
+                                        <div class="station-segment waste" style="height: 8px;"></div>
+                                        <div class="station-segment nva" style="height: 18px;"></div>
+                                        <div class="station-segment value" style="height: 36px;"></div>
+                                    </div>
+                                    <div class="station-label">S28</div>
+                                    <div class="station-total">39s</div>
+                                </div>
+                                <div class="station-column">
+                                    <div class="station-bar" style="height: 71px;">
+                                        <div class="station-segment waste" style="height: 13px;"></div>
+                                        <div class="station-segment nva" style="height: 14px;"></div>
+                                        <div class="station-segment value" style="height: 44px;"></div>
+                                    </div>
+                                    <div class="station-label">S29</div>
+                                    <div class="station-total">44s</div>
+                                </div>
+                                <div class="station-column">
+                                    <div class="station-bar" style="height: 65px;">
+                                        <div class="station-segment waste" style="height: 10px;"></div>
+                                        <div class="station-segment nva" style="height: 20px;"></div>
+                                        <div class="station-segment value" style="height: 35px;"></div>
+                                    </div>
+                                    <div class="station-label">S30</div>
+                                    <div class="station-total">41s</div>
+                                </div>
+                                <div class="station-column">
+                                    <div class="station-bar" style="height: 73px;">
+                                        <div class="station-segment waste" style="height: 15px;"></div>
+                                        <div class="station-segment nva" style="height: 15px;"></div>
+                                        <div class="station-segment value" style="height: 43px;"></div>
+                                    </div>
+                                    <div class="station-label">S31</div>
+                                    <div class="station-total">46s</div>
+                                </div>
+                                <div class="station-column">
+                                    <div class="station-bar" style="height: 61px;">
+                                        <div class="station-segment waste" style="height: 7px;"></div>
+                                        <div class="station-segment nva" style="height: 18px;"></div>
+                                        <div class="station-segment value" style="height: 36px;"></div>
+                                    </div>
+                                    <div class="station-label">S32</div>
+                                    <div class="station-total">38s</div>
+                                </div>
+                                <div class="station-column">
+                                    <div class="station-bar" style="height: 70px;">
+                                        <div class="station-segment waste" style="height: 12px;"></div>
+                                        <div class="station-segment nva" style="height: 17px;"></div>
+                                        <div class="station-segment value" style="height: 41px;"></div>
+                                    </div>
+                                    <div class="station-label">S33</div>
+                                    <div class="station-total">44s</div>
+                                </div>
+                                <div class="station-column">
+                                    <div class="station-bar" style="height: 68px;">
+                                        <div class="station-segment waste" style="height: 11px;"></div>
+                                        <div class="station-segment nva" style="height: 16px;"></div>
+                                        <div class="station-segment value" style="height: 41px;"></div>
+                                    </div>
+                                    <div class="station-label">S34</div>
+                                    <div class="station-total">43s</div>
+                                </div>
+                                <div class="station-column">
+                                    <div class="station-bar" style="height: 63px;">
+                                        <div class="station-segment waste" style="height: 8px;"></div>
+                                        <div class="station-segment nva" style="height: 19px;"></div>
+                                        <div class="station-segment value" style="height: 36px;"></div>
+                                    </div>
+                                    <div class="station-label">S35</div>
+                                    <div class="station-total">39s</div>
+                                </div>
+                                <div class="station-column">
+                                    <div class="station-bar" style="height: 76px;">
+                                        <div class="station-segment waste" style="height: 19px;"></div>
+                                        <div class="station-segment nva" style="height: 15px;"></div>
+                                        <div class="station-segment value" style="height: 42px;"></div>
+                                    </div>
+                                    <div class="station-label">S36</div>
+                                    <div class="station-total">48s</div>
+                                </div>
+                                <div class="station-column">
+                                    <div class="station-bar" style="height: 59px;">
+                                        <div class="station-segment waste" style="height: 6px;"></div>
+                                        <div class="station-segment nva" style="height: 18px;"></div>
+                                        <div class="station-segment value" style="height: 35px;"></div>
+                                    </div>
+                                    <div class="station-label">S37</div>
+                                    <div class="station-total">37s</div>
+                                </div>
+                                <div class="station-column">
+                                    <div class="station-bar" style="height: 74px;">
+                                        <div class="station-segment waste" style="height: 15px;"></div>
+                                        <div class="station-segment nva" style="height: 15px;"></div>
+                                        <div class="station-segment value" style="height: 44px;"></div>
+                                    </div>
+                                    <div class="station-label">S38</div>
+                                    <div class="station-total">46s</div>
+                                </div>
+                                <div class="station-column">
+                                    <div class="station-bar" style="height: 66px;">
+                                        <div class="station-segment waste" style="height: 10px;"></div>
+                                        <div class="station-segment nva" style="height: 20px;"></div>
+                                        <div class="station-segment value" style="height: 36px;"></div>
+                                    </div>
+                                    <div class="station-label">S39</div>
+                                    <div class="station-total">41s</div>
+                                </div>
+                                <div class="station-column">
+                                    <div class="station-bar" style="height: 72px;">
+                                        <div class="station-segment waste" style="height: 14px;"></div>
+                                        <div class="station-segment nva" style="height: 14px;"></div>
+                                        <div class="station-segment value" style="height: 44px;"></div>
+                                    </div>
+                                    <div class="station-label">S40</div>
+                                    <div class="station-total">45s</div>
+                                </div>
+                                <div class="station-column">
+                                    <div class="station-bar" style="height: 60px;">
+                                        <div class="station-segment waste" style="height: 7px;"></div>
+                                        <div class="station-segment nva" style="height: 18px;"></div>
+                                        <div class="station-segment value" style="height: 35px;"></div>
+                                    </div>
+                                    <div class="station-label">S41</div>
+                                    <div class="station-total">38s</div>
+                                </div>
+                                <div class="station-column">
+                                    <div class="station-bar" style="height: 69px;">
+                                        <div class="station-segment waste" style="height: 11px;"></div>
+                                        <div class="station-segment nva" style="height: 17px;"></div>
+                                        <div class="station-segment value" style="height: 41px;"></div>
+                                    </div>
+                                    <div class="station-label">S42</div>
+                                    <div class="station-total">43s</div>
+                                </div>
+                                <div class="station-column">
+                                    <div class="station-bar" style="height: 64px;">
+                                        <div class="station-segment waste" style="height: 9px;"></div>
+                                        <div class="station-segment nva" style="height: 19px;"></div>
+                                        <div class="station-segment value" style="height: 36px;"></div>
+                                    </div>
+                                    <div class="station-label">S43</div>
+                                    <div class="station-total">40s</div>
+                                </div>
+                                <div class="station-column">
+                                    <div class="station-bar" style="height: 77px;">
+                                        <div class="station-segment waste" style="height: 19px;"></div>
+                                        <div class="station-segment nva" style="height: 15px;"></div>
+                                        <div class="station-segment value" style="height: 43px;"></div>
+                                    </div>
+                                    <div class="station-label">S44</div>
+                                    <div class="station-total">48s</div>
+                                </div>
+                                <div class="station-column">
+                                    <div class="station-bar" style="height: 62px;">
+                                        <div class="station-segment waste" style="height: 8px;"></div>
+                                        <div class="station-segment nva" style="height: 18px;"></div>
+                                        <div class="station-segment value" style="height: 36px;"></div>
+                                    </div>
+                                    <div class="station-label">S45</div>
+                                    <div class="station-total">39s</div>
+                                </div>
+                                <div class="station-column">
+                                    <div class="station-bar" style="height: 71px;">
+                                        <div class="station-segment waste" style="height: 13px;"></div>
+                                        <div class="station-segment nva" style="height: 14px;"></div>
+                                        <div class="station-segment value" style="height: 44px;"></div>
+                                    </div>
+                                    <div class="station-label">S46</div>
+                                    <div class="station-total">44s</div>
+                                </div>
+                                <div class="station-column">
+                                    <div class="station-bar" style="height: 65px;">
+                                        <div class="station-segment waste" style="height: 10px;"></div>
+                                        <div class="station-segment nva" style="height: 20px;"></div>
+                                        <div class="station-segment value" style="height: 35px;"></div>
+                                    </div>
+                                    <div class="station-label">S47</div>
+                                    <div class="station-total">41s</div>
+                                </div>
+                                <div class="station-column">
+                                    <div class="station-bar" style="height: 73px;">
+                                        <div class="station-segment waste" style="height: 15px;"></div>
+                                        <div class="station-segment nva" style="height: 15px;"></div>
+                                        <div class="station-segment value" style="height: 43px;"></div>
+                                    </div>
+                                    <div class="station-label">S48</div>
+                                    <div class="station-total">46s</div>
+                                </div>
+                                <div class="station-column">
+                                    <div class="station-bar" style="height: 61px;">
+                                        <div class="station-segment waste" style="height: 7px;"></div>
+                                        <div class="station-segment nva" style="height: 18px;"></div>
+                                        <div class="station-segment value" style="height: 36px;"></div>
+                                    </div>
+                                    <div class="station-label">S49</div>
+                                    <div class="station-total">38s</div>
+                                </div>
+                                <div class="station-column">
+                                    <div class="station-bar" style="height: 70px;">
+                                        <div class="station-segment waste" style="height: 12px;"></div>
+                                        <div class="station-segment nva" style="height: 17px;"></div>
+                                        <div class="station-segment value" style="height: 41px;"></div>
+                                    </div>
+                                    <div class="station-label">S50</div>
+                                    <div class="station-total">44s</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="legend">
+                    <div class="legend-item">
+                        <div class="legend-color waste"></div>
+                        <span>Waste (Red)</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color nva"></div>
+                        <span>Non-Value-Added (Yellow)</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color value"></div>
+                        <span>Value-Added (Green)</span>
+                    </div>
+                    <div class="legend-item" style="margin-left: auto;">
+                        <span style="color: #ef4444;">🔴</span>
+                        <span>Bottleneck</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="note-box">
+                <div class="note-title">💡 Zoomed Out View</div>
+                <div class="note-text">At 25% zoom, you can see all 50 stations at once. Notice Station 2, 5, and 9 are bottlenecks (red indicators) - they exceed the takt time line (45s). Stations below the red dotted line have extra capacity. Click and drag the minimap viewport or use zoom controls to focus on specific areas. <strong>Drag the takt time line up/down to adjust the target value</strong> - the seconds value updates in real-time as you drag. When you select a Line, the takt time line automatically snaps to that Line's takt time value.</div>
+            </div>
+        </div>
+
+        <!-- Zoomed In View - Focus on Problem -->
+        <div class="section">
+            <h2 class="section-title">2. Zoomed In View - Focus on Problem Area</h2>
+            <p class="section-description">Zoom in to see detailed breakdown of stations. Click a station to see individual work elements.</p>
+            
+            <div class="mockup">
+                <div class="mockup-nav">
+                    <div class="mockup-nav-title">Yamazumi</div>
+                    <div class="mockup-nav-items">
+                        <span class="mockup-nav-item">Analysis</span>
+                        <span class="mockup-nav-item active">Charts</span>
+                        <span class="mockup-nav-item">Upload</span>
+                    </div>
+                </div>
+                
+                <div class="toolbar">
+                    <div class="toolbar-left">
+                        <div class="view-toggle">
+                            <button class="toggle-button active">Waste/NVA/Value</button>
+                            <button class="toggle-button">Work Elements</button>
+                        </div>
+                    </div>
+                    <div class="toolbar-right">
+                        <div class="zoom-controls">
+                            <button class="zoom-button">−</button>
+                            <div class="zoom-slider">
+                                <div class="zoom-slider-track" style="width: 75%;"></div>
+                            </div>
+                            <button class="zoom-button">+</button>
+                            <div class="zoom-level">75%</div>
+                        </div>
+                        <button class="fit-button">Fit to Screen</button>
+                    </div>
+                </div>
+
+                <div class="mockup-content">
+                    <div class="minimap-container">
+                        <div class="minimap-title">Overview</div>
+                        <div class="minimap">
+                            <div class="minimap-stations">
+                                <!-- 50 stations in minimap -->
+                                <div class="minimap-station"></div>
+                                <div class="minimap-station highlight"></div>
+                                <div class="minimap-station"></div>
+                                <div class="minimap-station"></div>
+                                <div class="minimap-station highlight"></div>
+                                <div class="minimap-station"></div>
+                                <div class="minimap-station"></div>
+                                <div class="minimap-station"></div>
+                                <div class="minimap-station highlight"></div>
+                                <div class="minimap-station"></div>
+                                <div class="minimap-station"></div>
+                                <div class="minimap-station"></div>
+                                <div class="minimap-station"></div>
+                                <div class="minimap-station"></div>
+                                <div class="minimap-station"></div>
+                                <div class="minimap-station"></div>
+                                <div class="minimap-station"></div>
+                                <div class="minimap-station"></div>
+                                <div class="minimap-station"></div>
+                                <div class="minimap-station"></div>
+                                <div class="minimap-station"></div>
+                                <div class="minimap-station"></div>
+                                <div class="minimap-station"></div>
+                                <div class="minimap-station"></div>
+                                <div class="minimap-station"></div>
+                                <div class="minimap-station"></div>
+                                <div class="minimap-station"></div>
+                                <div class="minimap-station"></div>
+                                <div class="minimap-station"></div>
+                                <div class="minimap-station"></div>
+                                <div class="minimap-station"></div>
+                                <div class="minimap-station"></div>
+                                <div class="minimap-station"></div>
+                                <div class="minimap-station"></div>
+                                <div class="minimap-station"></div>
+                                <div class="minimap-station"></div>
+                                <div class="minimap-station"></div>
+                                <div class="minimap-station"></div>
+                                <div class="minimap-station"></div>
+                                <div class="minimap-station"></div>
+                                <div class="minimap-station"></div>
+                                <div class="minimap-station"></div>
+                                <div class="minimap-station"></div>
+                                <div class="minimap-station"></div>
+                                <div class="minimap-station"></div>
+                                <div class="minimap-station"></div>
+                                <div class="minimap-station"></div>
+                                <div class="minimap-station"></div>
+                                <div class="minimap-station"></div>
+                                <div class="minimap-station"></div>
+                                <div class="minimap-station"></div>
+                                <div class="minimap-station"></div>
+                                <div class="minimap-station"></div>
+                            </div>
+                            <div class="minimap-viewport" style="left: 5%; width: 15%; top: 0%; height: 100%;"></div>
+                        </div>
+                    </div>
+
+                    <div class="chart-wrapper">
+                        <div class="chart-container zoomed-in" style="transform: scale(0.75) translateX(-5%);">
+                            <!-- Takt Time Line -->
+                            <div class="takt-time-line" style="top: 180px;" title="Click to adjust takt time">
+                                <div class="takt-time-label">Takt Time: 45s</div>
+                            </div>
+                            <div class="yamazumi-chart">
+                                <!-- Focused view of stations 1-8 -->
+                                <div class="station-column">
+                                    <div class="station-bar" style="height: 180px;">
+                                        <div class="station-segment waste" style="height: 27px;">Waste</div>
+                                        <div class="station-segment nva" style="height: 45px;">NVA</div>
+                                        <div class="station-segment value" style="height: 108px;">Value</div>
+                                    </div>
+                                    <div class="station-label">Station 1</div>
+                                    <div class="station-total">45.2s</div>
+                                </div>
+                                
+                                <div class="station-column highlight">
+                                    <div class="bottleneck-indicator"></div>
+                                    <div class="station-bar" style="height: 211px;">
+                                        <div class="station-segment waste" style="height: 63px;">Waste</div>
+                                        <div class="station-segment nva" style="height: 42px;">NVA</div>
+                                        <div class="station-segment value" style="height: 106px;">Value</div>
+                                    </div>
+                                    <div class="station-label">Station 2</div>
+                                    <div class="station-total">52.8s</div>
+                                </div>
+                                
+                                <div class="station-column">
+                                    <div class="station-bar" style="height: 154px;">
+                                        <div class="station-segment waste" style="height: 15px;">Waste</div>
+                                        <div class="station-segment nva" style="height: 46px;">NVA</div>
+                                        <div class="station-segment value" style="height: 93px;">Value</div>
+                                    </div>
+                                    <div class="station-label">Station 3</div>
+                                    <div class="station-total">38.5s</div>
+                                </div>
+                                
+                                <div class="station-column">
+                                    <div class="station-bar" style="height: 165px;">
+                                        <div class="station-segment waste" style="height: 33px;">Waste</div>
+                                        <div class="station-segment nva" style="height: 41px;">NVA</div>
+                                        <div class="station-segment value" style="height: 91px;">Value</div>
+                                    </div>
+                                    <div class="station-label">Station 4</div>
+                                    <div class="station-total">41.3s</div>
+                                </div>
+                                
+                                <div class="station-column highlight">
+                                    <div class="bottleneck-indicator"></div>
+                                    <div class="station-bar" style="height: 200px;">
+                                        <div class="station-segment waste" style="height: 60px;">Waste</div>
+                                        <div class="station-segment nva" style="height: 40px;">NVA</div>
+                                        <div class="station-segment value" style="height: 100px;">Value</div>
+                                    </div>
+                                    <div class="station-label">Station 5</div>
+                                    <div class="station-total">50.0s</div>
+                                </div>
+                                
+                                <div class="station-column">
+                                    <div class="station-bar" style="height: 172px;">
+                                        <div class="station-segment waste" style="height: 31px;">Waste</div>
+                                        <div class="station-segment nva" style="height: 38px;">NVA</div>
+                                        <div class="station-segment value" style="height: 103px;">Value</div>
+                                    </div>
+                                    <div class="station-label">Station 6</div>
+                                    <div class="station-total">43.1s</div>
+                                </div>
+                                
+                                <div class="station-column">
+                                    <div class="station-bar" style="height: 196px;">
+                                        <div class="station-segment waste" style="height: 49px;">Waste</div>
+                                        <div class="station-segment nva" style="height: 39px;">NVA</div>
+                                        <div class="station-segment value" style="height: 108px;">Value</div>
+                                    </div>
+                                    <div class="station-label">Station 7</div>
+                                    <div class="station-total">48.9s</div>
+                                </div>
+                                
+                                <div class="station-column">
+                                    <div class="station-bar" style="height: 146px;">
+                                        <div class="station-segment waste" style="height: 12px;">Waste</div>
+                                        <div class="station-segment nva" style="height: 47px;">NVA</div>
+                                        <div class="station-segment value" style="height: 87px;">Value</div>
+                                    </div>
+                                    <div class="station-label">Station 8</div>
+                                    <div class="station-total">36.4s</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="legend">
+                    <div class="legend-item">
+                        <div class="legend-color waste"></div>
+                        <span>Waste (Red)</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color nva"></div>
+                        <span>Non-Value-Added (Yellow)</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color value"></div>
+                        <span>Value-Added (Green)</span>
+                    </div>
+                    <div class="legend-item" style="margin-left: auto;">
+                        <span style="color: #64748b;">💡 Click station to see work elements | Drag to pan</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="note-box">
+                <div class="note-title">💡 Zoomed In View</div>
+                <div class="note-text">At 75% zoom, you can see detailed breakdown of 8 stations. The minimap shows your current viewport (blue box). Notice Station 2 and 5 are bottlenecks - they exceed the takt time line (45s). Stations 3, 4, 6, and 8 are below the line and have extra capacity. Click a station to zoom into work elements, or drag the minimap viewport to navigate to other areas. <strong>Drag the takt time line up/down to adjust the target value</strong> for "what if" scenarios - the seconds value updates in real-time as you drag.</div>
+            </div>
+        </div>
+
+        <!-- Info Box -->
+        <div class="info-box">
+            <div class="info-title">Zoom & Pan Specifications</div>
+            <div class="info-text">
+                <p><strong>Zoom Controls:</strong></p>
+                <ul>
+                    <li><span class="highlight">Zoom Slider:</span> Drag to adjust zoom level (10% to 200%)</li>
+                    <li><span class="highlight">Zoom Buttons:</span> Click + to zoom in, - to zoom out</li>
+                    <li><span class="highlight">Fit to Screen:</span> Automatically adjusts zoom to show all stations</li>
+                    <li><span class="highlight">Mouse Wheel:</span> Scroll to zoom in/out (centered on cursor)</li>
+                </ul>
+                <p style="margin-top: 1rem;"><strong>Pan & Navigation:</strong></p>
+                <ul>
+                    <li><span class="highlight">Click & Drag:</span> Pan the chart to navigate</li>
+                    <li><span class="highlight">Minimap:</span> Click or drag the viewport box to jump to different areas</li>
+                    <li><span class="highlight">Arrow Keys:</span> Pan left/right/up/down</li>
+                    <li><span class="highlight">Station Click:</span> Click a station to zoom into work elements (micro view)</li>
+                </ul>
+                <p style="margin-top: 1rem;"><strong>Zoom Levels:</strong></p>
+                <ul>
+                    <li><span class="highlight">10-30%:</span> See entire factory (50+ stations) - perfect for identifying bottlenecks</li>
+                    <li><span class="highlight">50-75%:</span> See 10-20 stations with detail - good for analyzing sections</li>
+                    <li><span class="highlight">100-200%:</span> See 3-8 stations with full detail - focus on problem areas</li>
+                </ul>
+                <p style="margin-top: 1rem;"><strong>Takt Time Line:</strong></p>
+                <ul>
+                    <li><span class="highlight">Visual Style:</span> Horizontal red dotted line across chart</li>
+                    <li><span class="highlight">Position:</span> Based on takt time value (e.g., 45 seconds)</li>
+                    <li><span class="highlight">Label:</span> "Takt Time: 45s" displayed on right side (updates in real-time as line is dragged)</li>
+                    <li><span class="highlight">Interpretation:</span> Stations above line = bottlenecks (over takt time), Stations below line = extra capacity (under takt time)</li>
+                    <li><span class="highlight">Interaction:</span> Drag line up/down to adjust takt time value for "what if" scenarios</li>
+                    <li><span class="highlight">Live Update:</span> Seconds value updates in real-time as line is dragged</li>
+                    <li><span class="highlight">Auto-Snap:</span> When user selects a Line, line automatically snaps to that Line's takt time value</li>
+                    <li><span class="highlight">Data Model:</span> Takt time is a Line-level property (stored at Line level in database, not Station level)</li>
+                    <li><span class="highlight">Cursor:</span> Changes to "grab" (open hand) when hovering, "grabbing" (closed hand) when dragging</li>
+                    <li><span class="highlight">Purpose:</span> Enables rebalancing analysis - identify which stations need kaizen or can take on more work</li>
+                </ul>
+                <p style="margin-top: 1rem;"><strong>Rationale:</strong> Large factories need both overview and detail views. Zoom out to see the full picture and identify bottlenecks, then zoom in to analyze specific problem areas. The minimap provides spatial context and quick navigation. The takt time line is critical for rebalancing - it shows which stations exceed the target and which have capacity for additional work elements.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
