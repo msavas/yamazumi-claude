@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yamazumi - Single Video Analysis with Takt Time</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+            background: #f5f5f5;
+            color: #1a1a1a;
+            line-height: 1.6;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            color: #1e293b;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: #64748b;
+            margin-bottom: 3rem;
+        }
+
+        .section {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #1e293b;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 0.5rem;
+        }
+
+        .section-description {
+            color: #64748b;
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
+        }
+
+        .mockup {
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            overflow: hidden;
+            background: white;
+        }
+
+        .mockup-nav {
+            background: #1e293b;
+            color: white;
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .mockup-nav-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .mockup-nav-items {
+            display: flex;
+            gap: 2rem;
+            font-size: 0.9rem;
+        }
+
+        .mockup-nav-item {
+            opacity: 0.8;
+        }
+
+        .mockup-nav-item.active {
+            opacity: 1;
+            font-weight: 500;
+        }
+
+        .toolbar {
+            background: #f8fafc;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .toolbar-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .toolbar-right {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .btn {
+            padding: 0.5rem 1.25rem;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary {
+            background: #2563eb;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1d4ed8;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #2563eb;
+            border: 1px solid #2563eb;
+        }
+
+        .btn-secondary:hover {
+            background: #eff6ff;
+        }
+
+        .stats {
+            display: flex;
+            gap: 1.5rem;
+            font-size: 0.9rem;
+            color: #64748b;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .stat-value {
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .mockup-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 0;
+            min-height: 600px;
+        }
+
+        .left-panel {
+            background: #1e293b;
+            padding: 1.5rem;
+            border-right: 1px solid #e2e8f0;
+        }
+
+        .right-panel {
+            background: white;
+            padding: 1.5rem;
+            overflow-y: auto;
+            max-height: 600px;
+        }
+
+        /* Video Player */
+        .video-placeholder {
+            width: 100%;
+            aspect-ratio: 16/9;
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Timeline */
+        .timeline-container {
+            margin-bottom: 1rem;
+        }
+
+        .timeline-label {
+            color: white;
+            font-size: 0.85rem;
+            margin-bottom: 0.5rem;
+            opacity: 0.8;
+        }
+
+        .timeline {
+            position: relative;
+            height: 80px;
+            background: #334155;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .timeline-segment {
+            position: absolute;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 2px solid;
+            border-left: none;
+            border-right: none;
+        }
+
+        .timeline-segment:hover {
+            filter: brightness(1.15);
+            z-index: 10;
+        }
+
+        .timeline-segment.ghost {
+            opacity: 0.5;
+            border-style: dashed;
+        }
+
+        .timeline-segment.solid {
+            opacity: 1.0;
+            border-style: solid;
+        }
+
+        .timeline-segment.waste {
+            background: #ef4444;
+            border-color: #ef4444;
+        }
+
+        .timeline-segment.ghost.waste {
+            background: rgba(239, 68, 68, 0.2);
+            border-color: rgba(239, 68, 68, 0.5);
+        }
+
+        .timeline-segment.nva {
+            background: #f59e0b;
+            border-color: #f59e0b;
+        }
+
+        .timeline-segment.ghost.nva {
+            background: rgba(245, 158, 11, 0.2);
+            border-color: rgba(245, 158, 11, 0.5);
+        }
+
+        .timeline-segment.value {
+            background: #10b981;
+            border-color: #10b981;
+        }
+
+        .timeline-segment.ghost.value {
+            background: rgba(16, 185, 129, 0.2);
+            border-color: rgba(16, 185, 129, 0.5);
+        }
+
+        .confidence-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            width: 20px;
+            height: 20px;
+            background: #fbbf24;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: white;
+            border: 2px solid white;
+        }
+
+        /* Stacked Bar Chart with Takt Time */
+        .chart-container {
+            position: relative;
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+        }
+
+        .chart-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 1rem;
+        }
+
+        .chart-wrapper {
+            position: relative;
+            min-height: 300px;
+        }
+
+        .stacked-bar-chart {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .work-element-bar {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            position: relative;
+        }
+
+        .element-label {
+            min-width: 120px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #1e293b;
+        }
+
+        .bar-container {
+            flex: 1;
+            height: 50px;
+            position: relative;
+            border-radius: 4px;
+            overflow: hidden;
+            border: 2px solid #e2e8f0;
+        }
+
+        .bar-segment {
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: white;
+            border-right: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .bar-segment:hover {
+            filter: brightness(1.1);
+        }
+
+        .bar-segment:last-child {
+            border-right: none;
+        }
+
+        .bar-segment.ghost {
+            opacity: 0.5;
+            border: 1px dashed;
+        }
+
+        .bar-segment.solid {
+            opacity: 1.0;
+            border: 1px solid;
+        }
+
+        .bar-segment.waste {
+            background: #ef4444;
+        }
+
+        .bar-segment.ghost.waste {
+            background: rgba(239, 68, 68, 0.2);
+            border-color: rgba(239, 68, 68, 0.5);
+        }
+
+        .bar-segment.nva {
+            background: #f59e0b;
+        }
+
+        .bar-segment.ghost.nva {
+            background: rgba(245, 158, 11, 0.2);
+            border-color: rgba(245, 158, 11, 0.5);
+        }
+
+        .bar-segment.value {
+            background: #10b981;
+        }
+
+        .bar-segment.ghost.value {
+            background: rgba(16, 185, 129, 0.2);
+            border-color: rgba(16, 185, 129, 0.5);
+        }
+
+        .element-duration {
+            min-width: 70px;
+            text-align: right;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        /* Takt Time Line */
+        .takt-time-line {
+            position: absolute;
+            left: 130px;
+            right: 80px;
+            border-top: 2px dashed #ef4444;
+            z-index: 50;
+            cursor: grab;
+            transition: border-top-width 0.2s ease;
+        }
+
+        .takt-time-line:hover {
+            border-top-width: 3px;
+            cursor: grab;
+        }
+
+        .takt-time-line:active {
+            cursor: grabbing;
+        }
+
+        .takt-time-label {
+            position: absolute;
+            right: -80px;
+            transform: translateY(-50%);
+            background: #ef4444;
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            white-space: nowrap;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            pointer-events: none;
+        }
+
+        .takt-time-label::after {
+            content: '';
+            position: absolute;
+            left: -4px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 0;
+            height: 0;
+            border-top: 4px solid transparent;
+            border-bottom: 4px solid transparent;
+            border-right: 4px solid #ef4444;
+        }
+
+        /* Work Element List */
+        .work-element-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .work-element-item {
+            display: flex;
+            flex-direction: column;
+            padding: 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .work-element-item:hover {
+            background: #f1f5f9;
+        }
+
+        .work-element-item.ghost {
+            opacity: 0.5;
+            border: 2px dashed #cbd5e1;
+            background: #f8fafc;
+        }
+
+        .work-element-item.solid {
+            opacity: 1.0;
+            border: 2px solid #e2e8f0;
+            background: white;
+        }
+
+        .element-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .element-name {
+            font-weight: 600;
+            color: #1e293b;
+            font-size: 0.95rem;
+        }
+
+        .element-duration-small {
+            font-size: 0.85rem;
+            color: #64748b;
+        }
+
+        .element-breakdown {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .breakdown-segment {
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .breakdown-segment.ghost {
+            opacity: 0.5;
+            border: 1px dashed;
+        }
+
+        .breakdown-segment.solid {
+            opacity: 1.0;
+            border: 1px solid;
+        }
+
+        .breakdown-segment.waste {
+            background: rgba(239, 68, 68, 0.2);
+            border-color: rgba(239, 68, 68, 0.5);
+            color: #991b1b;
+        }
+
+        .breakdown-segment.solid.waste {
+            background: #ef4444;
+            border-color: #ef4444;
+            color: white;
+        }
+
+        .breakdown-segment.nva {
+            background: rgba(245, 158, 11, 0.2);
+            border-color: rgba(245, 158, 11, 0.5);
+            color: #92400e;
+        }
+
+        .breakdown-segment.solid.nva {
+            background: #f59e0b;
+            border-color: #f59e0b;
+            color: white;
+        }
+
+        .breakdown-segment.value {
+            background: rgba(16, 185, 129, 0.2);
+            border-color: rgba(16, 185, 129, 0.5);
+            color: #065f46;
+        }
+
+        .breakdown-segment.solid.value {
+            background: #10b981;
+            border-color: #10b981;
+            color: white;
+        }
+
+        .confidence-indicator {
+            font-size: 0.7rem;
+            padding: 0.15rem 0.4rem;
+            border-radius: 3px;
+            font-weight: 600;
+        }
+
+        .confidence-indicator.high {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .confidence-indicator.medium {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .confidence-indicator.low {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .info-box {
+            background: #f8fafc;
+            border-left: 4px solid #2563eb;
+            padding: 1.5rem;
+            margin-top: 2rem;
+            border-radius: 4px;
+        }
+
+        .info-title {
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 0.75rem;
+            font-size: 1.1rem;
+        }
+
+        .info-text {
+            color: #64748b;
+            font-size: 0.95rem;
+            line-height: 1.8;
+        }
+
+        .highlight {
+            background: #fef3c7;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-weight: 500;
+        }
+
+        .note-box {
+            background: #dbeafe;
+            border-left: 4px solid #2563eb;
+            padding: 1rem;
+            border-radius: 4px;
+            margin-top: 1rem;
+        }
+
+        .note-title {
+            font-weight: 600;
+            color: #1e40af;
+            margin-bottom: 0.5rem;
+        }
+
+        .note-text {
+            color: #1e3a8a;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Single Video Analysis with Takt Time</h1>
+        <p class="subtitle">Complete video analysis interface showing stacked bar chart with takt time line</p>
+
+        <!-- Main Analysis Interface -->
+        <div class="section">
+            <h2 class="section-title">Video Analysis Interface</h2>
+            <p class="section-description">After AI analysis, users can review results, verify categorizations, and see how work elements compare to takt time.</p>
+            
+            <div class="mockup">
+                <div class="mockup-nav">
+                    <div class="mockup-nav-title">Yamazumi</div>
+                    <div class="mockup-nav-items">
+                        <span class="mockup-nav-item active">Analysis</span>
+                        <span class="mockup-nav-item">Charts</span>
+                        <span class="mockup-nav-item">Upload</span>
+                    </div>
+                </div>
+                
+                <div class="toolbar">
+                    <div class="toolbar-left">
+                        <div class="stats">
+                            <div class="stat-item">
+                                <span>Total Elements:</span>
+                                <span class="stat-value">6</span>
+                            </div>
+                            <div class="stat-item">
+                                <span>Unverified:</span>
+                                <span class="stat-value" style="color: #f59e0b;">4</span>
+                            </div>
+                            <div class="stat-item">
+                                <span>Verified:</span>
+                                <span class="stat-value" style="color: #10b981;">2</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="toolbar-right">
+                        <button class="btn btn-primary">Accept All AI Suggestions</button>
+                        <button class="btn btn-secondary">Save Draft</button>
+                    </div>
+                </div>
+
+                <div class="mockup-content">
+                    <div class="left-panel">
+                        <div class="video-placeholder">
+                            ▶ Video Player
+                        </div>
+                        <div class="timeline-container">
+                            <div class="timeline-label">Timeline (Click segments to verify + cycle category)</div>
+                            <div class="timeline">
+                                <div class="timeline-segment ghost waste" style="left: 0%; width: 12%;" title="Click to verify + cycle">
+                                    Waste
+                                    <div class="confidence-badge">?</div>
+                                </div>
+                                <div class="timeline-segment ghost nva" style="left: 12%; width: 18%;" title="Click to verify + cycle">
+                                    NVA
+                                </div>
+                                <div class="timeline-segment solid value" style="left: 30%; width: 25%;" title="Verified - Click to cycle category">
+                                    Value
+                                </div>
+                                <div class="timeline-segment ghost waste" style="left: 55%; width: 10%;" title="Click to verify + cycle">
+                                    Waste
+                                    <div class="confidence-badge">?</div>
+                                </div>
+                                <div class="timeline-segment ghost nva" style="left: 65%; width: 15%;" title="Click to verify + cycle">
+                                    NVA
+                                </div>
+                                <div class="timeline-segment solid value" style="left: 80%; width: 20%;" title="Verified - Click to cycle category">
+                                    Value
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Stacked Bar Chart -->
+                        <div class="chart-container">
+                            <div class="chart-title">Work Elements Breakdown</div>
+                            <div class="chart-wrapper">
+                                <div class="stacked-bar-chart">
+                                    <div class="work-element-bar">
+                                        <div class="element-label">Install Bolt</div>
+                                        <div class="bar-container">
+                                            <div class="bar-segment ghost waste" style="width: 20%;">Waste</div>
+                                            <div class="bar-segment ghost nva" style="width: 30%;">NVA</div>
+                                            <div class="bar-segment ghost value" style="width: 50%;">Value</div>
+                                        </div>
+                                        <div class="element-duration">12.5s</div>
+                                    </div>
+                                    
+                                    <div class="work-element-bar">
+                                        <div class="element-label">Position Part</div>
+                                        <div class="bar-container">
+                                            <div class="bar-segment ghost waste" style="width: 40%;">Waste</div>
+                                            <div class="bar-segment ghost nva" style="width: 35%;">NVA</div>
+                                            <div class="bar-segment ghost value" style="width: 25%;">Value</div>
+                                        </div>
+                                        <div class="element-duration">8.2s</div>
+                                    </div>
+                                    
+                                    <div class="work-element-bar">
+                                        <div class="element-label">Tighten Screw</div>
+                                        <div class="bar-container">
+                                            <div class="bar-segment solid waste" style="width: 10%;">Waste</div>
+                                            <div class="bar-segment solid nva" style="width: 20%;">NVA</div>
+                                            <div class="bar-segment solid value" style="width: 70%;">Value</div>
+                                        </div>
+                                        <div class="element-duration">6.8s</div>
+                                    </div>
+                                    
+                                    <div class="work-element-bar">
+                                        <div class="element-label">Inspect Quality</div>
+                                        <div class="bar-container">
+                                            <div class="bar-segment solid waste" style="width: 15%;">Waste</div>
+                                            <div class="bar-segment solid nva" style="width: 10%;">NVA</div>
+                                            <div class="bar-segment solid value" style="width: 75%;">Value</div>
+                                        </div>
+                                        <div class="element-duration">5.3s</div>
+                                    </div>
+                                    
+                                    <div class="work-element-bar">
+                                        <div class="element-label">Move to Next</div>
+                                        <div class="bar-container">
+                                            <div class="bar-segment ghost waste" style="width: 100%;">Waste</div>
+                                        </div>
+                                        <div class="element-duration">10.5s</div>
+                                    </div>
+                                    
+                                    <div class="work-element-bar">
+                                        <div class="element-label">Wait Material</div>
+                                        <div class="bar-container">
+                                            <div class="bar-segment ghost waste" style="width: 100%;">Waste</div>
+                                        </div>
+                                        <div class="element-duration">9.5s</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="right-panel">
+                        <div style="font-weight: 600; color: #1e293b; margin-bottom: 1rem; font-size: 0.9rem;">Work Elements (Right-click for AI reasoning)</div>
+                        <div class="work-element-list">
+                            <div class="work-element-item ghost" title="Click to verify + cycle, Right-click for AI reasoning">
+                                <div class="element-header">
+                                    <div class="element-name">Install Bolt</div>
+                                    <div class="element-duration-small">12.5s</div>
+                                </div>
+                                <div class="element-breakdown">
+                                    <span class="breakdown-segment ghost waste">
+                                        Waste
+                                        <span class="confidence-indicator low">0.45</span>
+                                    </span>
+                                    <span class="breakdown-segment ghost nva">
+                                        NVA
+                                        <span class="confidence-indicator medium">0.72</span>
+                                    </span>
+                                    <span class="breakdown-segment ghost value">
+                                        Value
+                                        <span class="confidence-indicator high">0.88</span>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="work-element-item ghost" title="Click to verify + cycle, Right-click for AI reasoning">
+                                <div class="element-header">
+                                    <div class="element-name">Position Part</div>
+                                    <div class="element-duration-small">8.2s</div>
+                                </div>
+                                <div class="element-breakdown">
+                                    <span class="breakdown-segment ghost waste">
+                                        Waste
+                                        <span class="confidence-indicator medium">0.65</span>
+                                    </span>
+                                    <span class="breakdown-segment ghost nva">
+                                        NVA
+                                        <span class="confidence-indicator high">0.82</span>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="work-element-item solid" title="Verified - Click to cycle category">
+                                <div class="element-header">
+                                    <div class="element-name">Tighten Screw</div>
+                                    <div class="element-duration-small">6.8s</div>
+                                </div>
+                                <div class="element-breakdown">
+                                    <span class="breakdown-segment solid nva">
+                                        NVA
+                                    </span>
+                                    <span class="breakdown-segment solid value">
+                                        Value
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="work-element-item solid" title="Verified - Click to cycle category">
+                                <div class="element-header">
+                                    <div class="element-name">Inspect Quality</div>
+                                    <div class="element-duration-small">5.3s</div>
+                                </div>
+                                <div class="element-breakdown">
+                                    <span class="breakdown-segment solid waste">
+                                        Waste
+                                    </span>
+                                    <span class="breakdown-segment solid nva">
+                                        NVA
+                                    </span>
+                                    <span class="breakdown-segment solid value">
+                                        Value
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="work-element-item ghost" title="Click to verify + cycle, Right-click for AI reasoning">
+                                <div class="element-header">
+                                    <div class="element-name">Move to Next</div>
+                                    <div class="element-duration-small">10.5s</div>
+                                </div>
+                                <div class="element-breakdown">
+                                    <span class="breakdown-segment ghost waste">
+                                        Waste
+                                        <span class="confidence-indicator high">0.95</span>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="work-element-item ghost" title="Click to verify + cycle, Right-click for AI reasoning">
+                                <div class="element-header">
+                                    <div class="element-name">Wait Material</div>
+                                    <div class="element-duration-small">9.5s</div>
+                                </div>
+                                <div class="element-breakdown">
+                                    <span class="breakdown-segment ghost waste">
+                                        Waste
+                                        <span class="confidence-indicator high">0.92</span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="note-box">
+                <div class="note-title">💡 Single Video Analysis View</div>
+                <div class="note-text">
+                    This view focuses on analyzing individual work elements from a single video. The stacked bar chart shows the breakdown of waste, non-value-added, and value-added work. 
+                    Notice the ghost vs solid states - unverified AI suggestions appear in ghost state (50% opacity, dashed borders), while verified elements appear solid. 
+                    The takt time line does NOT appear in this view - it's only shown in factory-wide Yamazumi views where rebalancing across multiple stations is the focus.
+                </div>
+            </div>
+        </div>
+
+        <!-- Info Box -->
+        <div class="info-box">
+            <div class="info-title">Single Video Analysis Features</div>
+            <div class="info-text">
+                <p><strong>Note:</strong> Takt time line does NOT appear in single video analysis view. It only appears in factory-wide Yamazumi views (macro and micro views) where rebalancing across multiple stations is the focus.</p>
+                <p style="margin-top: 1rem;"><strong>Ghost vs Solid States:</strong></p>
+                <ul>
+                    <li>Ghost state (50% opacity, dashed): Unverified AI suggestions</li>
+                    <li>Solid state (100% opacity, solid): Verified/user-overridden data</li>
+                    <li>Click any segment to verify + cycle category</li>
+                </ul>
+                <p style="margin-top: 1rem;"><strong>Draft & Commit Workflow:</strong></p>
+                <ul>
+                    <li>"Accept All" button for bulk verification</li>
+                    <li>Click-to-cycle for individual corrections</li>
+                    <li>Right-click for AI reasoning tooltips</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

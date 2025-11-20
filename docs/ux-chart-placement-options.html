@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yamazumi - Chart Placement & Hierarchy Options</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+            background: #f5f5f5;
+            color: #1a1a1a;
+            line-height: 1.6;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 3rem;
+        }
+
+        .section {
+            margin-bottom: 4rem;
+        }
+
+        .section-title {
+            font-size: 1.75rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #1e293b;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .option-card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .option-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #1e293b;
+        }
+
+        .option-description {
+            color: #64748b;
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+        }
+
+        .mockup {
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            overflow: hidden;
+            background: white;
+            margin-bottom: 1rem;
+        }
+
+        .mockup-nav {
+            background: #1e293b;
+            color: white;
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .mockup-nav-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .mockup-nav-items {
+            display: flex;
+            gap: 2rem;
+            font-size: 0.9rem;
+        }
+
+        .mockup-nav-item {
+            opacity: 0.8;
+        }
+
+        .mockup-nav-item.active {
+            opacity: 1;
+            font-weight: 500;
+        }
+
+        .mockup-content {
+            padding: 1.5rem;
+        }
+
+        .layout-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .video-section {
+            background: #000;
+            border-radius: 6px;
+            padding: 1.5rem;
+            min-height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            margin-bottom: 1rem;
+        }
+
+        .timeline {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .timeline-bar {
+            height: 32px;
+            background: linear-gradient(to right, #10b981 0%, #10b981 30%, #f59e0b 30%, #f59e0b 60%, #ef4444 60%, #ef4444 100%);
+            border-radius: 4px;
+            position: relative;
+        }
+
+        .breakpoint {
+            position: absolute;
+            top: -6px;
+            width: 3px;
+            height: 44px;
+            background: #2563eb;
+            border-radius: 2px;
+        }
+
+        .breakpoint:nth-child(1) { left: 30%; }
+        .breakpoint:nth-child(2) { left: 60%; }
+
+        .sidebar {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            padding: 1rem;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+
+        .chart-container {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            padding: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .chart-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #1e293b;
+        }
+
+        .stacked-bar {
+            height: 40px;
+            background: linear-gradient(to right, #10b981 0%, #10b981 25%, #f59e0b 25%, #f59e0b 50%, #ef4444 50%, #ef4444 100%);
+            border-radius: 4px;
+            margin-bottom: 0.75rem;
+            position: relative;
+            display: flex;
+            align-items: center;
+            padding: 0 1rem;
+            color: white;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .stacked-bar:nth-child(2) {
+            background: linear-gradient(to right, #10b981 0%, #10b981 40%, #f59e0b 40%, #f59e0b 70%, #ef4444 70%, #ef4444 100%);
+        }
+
+        .stacked-bar:nth-child(3) {
+            background: linear-gradient(to right, #10b981 0%, #10b981 35%, #f59e0b 35%, #f59e0b 65%, #ef4444 65%, #ef4444 100%);
+        }
+
+        .toggle-buttons {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .toggle-btn {
+            padding: 0.5rem 1rem;
+            border: 1px solid #e2e8f0;
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+
+        .toggle-btn.active {
+            background: #2563eb;
+            color: white;
+            border-color: #2563eb;
+        }
+
+        .pros-cons {
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .pros-cons h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: #1e293b;
+        }
+
+        .pros-cons ul {
+            list-style: none;
+            margin-left: 0;
+        }
+
+        .pros-cons li {
+            padding: 0.5rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+            color: #475569;
+            font-size: 0.9rem;
+        }
+
+        .pros-cons li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #10b981;
+            font-weight: bold;
+        }
+
+        .pros-cons.cons li:before {
+            content: "⚠";
+            color: #f59e0b;
+        }
+
+        /* Option A: Chart Below Video */
+        .option-a .layout-grid {
+            grid-template-columns: 2fr 1fr;
+        }
+
+        .option-a .left-column {
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Option B: Chart Replaces Sidebar */
+        .option-b .layout-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .option-b .toggle-buttons {
+            justify-content: center;
+        }
+
+        /* Option C: Chart in Modal/Overlay */
+        .option-c .chart-container {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            max-width: 800px;
+            width: 90%;
+            z-index: 1000;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+        }
+
+        .option-c .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 999;
+        }
+
+        /* Hierarchy Options */
+        .hierarchy-options {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+
+        .hierarchy-mockup {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 1.5rem;
+            min-height: 400px;
+        }
+
+        .hierarchy-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #1e293b;
+        }
+
+        /* Dropdown Option */
+        .dropdown-select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 1rem;
+            background: white;
+            margin-bottom: 1rem;
+        }
+
+        .dropdown-select:focus {
+            outline: none;
+            border-color: #2563eb;
+        }
+
+        /* Tabs Option */
+        .tabs-container {
+            border-bottom: 2px solid #e2e8f0;
+            margin-bottom: 1rem;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 0;
+        }
+
+        .tab {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            background: transparent;
+            border-bottom: 3px solid transparent;
+            cursor: pointer;
+            font-size: 0.95rem;
+            color: #64748b;
+            transition: all 0.2s;
+        }
+
+        .tab:hover {
+            color: #1e293b;
+            background: #f8fafc;
+        }
+
+        .tab.active {
+            color: #2563eb;
+            border-bottom-color: #2563eb;
+            font-weight: 500;
+        }
+
+        .tab-content {
+            padding: 1.5rem 0;
+            min-height: 300px;
+        }
+
+        /* Tree Option */
+        .tree-container {
+            padding: 1rem 0;
+        }
+
+        .tree-node {
+            padding: 0.5rem 0;
+        }
+
+        .tree-node-label {
+            display: flex;
+            align-items: center;
+            padding: 0.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .tree-node-label:hover {
+            background: #f8fafc;
+        }
+
+        .tree-node-label.selected {
+            background: #eff6ff;
+            color: #2563eb;
+            font-weight: 500;
+        }
+
+        .tree-toggle {
+            width: 20px;
+            height: 20px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 0.5rem;
+            cursor: pointer;
+            border-radius: 3px;
+        }
+
+        .tree-toggle:hover {
+            background: #e2e8f0;
+        }
+
+        .tree-children {
+            margin-left: 1.5rem;
+            margin-top: 0.25rem;
+        }
+
+        .tree-icon {
+            margin-right: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .comparison-note {
+            background: #eff6ff;
+            border: 1px solid #2563eb;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .comparison-note h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: #1e40af;
+        }
+
+        .comparison-note p {
+            color: #475569;
+            line-height: 1.8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📊 Chart Placement & Hierarchy Selection Options</h1>
+        <p class="subtitle">Explore different approaches for displaying charts and selecting factory hierarchy</p>
+
+        <!-- Chart Placement Section -->
+        <div class="section">
+            <div class="section-title">1. Stacked Bar Chart Placement</div>
+            <p style="color: #64748b; margin-bottom: 2rem;">Where should the stacked bar chart appear once it's been created?</p>
+
+            <div class="options-grid">
+                <!-- Option A: Chart Below Video -->
+                <div class="option-card option-a">
+                    <div class="option-title">Option A: Chart Below Video</div>
+                    <div class="option-description">Chart appears in the same column as video, below the timeline. Toggle between list and chart views.</div>
+
+                    <div class="mockup">
+                        <div class="mockup-nav">
+                            <div class="mockup-nav-title">Yamazumi</div>
+                            <div class="mockup-nav-items">
+                                <span class="mockup-nav-item active">Analysis</span>
+                                <span class="mockup-nav-item">Charts</span>
+                            </div>
+                        </div>
+                        <div class="mockup-content">
+                            <div class="layout-grid">
+                                <div class="left-column">
+                                    <div class="video-section">
+                                        <div>Video Player</div>
+                                    </div>
+                                    <div class="timeline">
+                                        <div class="timeline-bar">
+                                            <div class="breakpoint"></div>
+                                            <div class="breakpoint"></div>
+                                        </div>
+                                    </div>
+                                    <div class="toggle-buttons">
+                                        <button class="toggle-btn">📋 List View</button>
+                                        <button class="toggle-btn active">📊 Chart View</button>
+                                    </div>
+                                    <div class="chart-container">
+                                        <div class="chart-title">Work Element Analysis</div>
+                                        <div class="stacked-bar">Install Bolt - 18.2s</div>
+                                        <div class="stacked-bar">Apply Sealant - 16.4s</div>
+                                        <div class="stacked-bar">Tighten Bolt - 14.7s</div>
+                                    </div>
+                                </div>
+                                <div class="sidebar">
+                                    <div style="text-align: center; color: #64748b; padding: 2rem;">
+                                        Work elements list (hidden in chart view)
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pros-cons">
+                        <h3>Pros:</h3>
+                        <ul>
+                            <li>Chart and video in same visual area</li>
+                            <li>Easy to compare chart with video timeline</li>
+                            <li>Sidebar still available for other info</li>
+                            <li>Toggle keeps interface clean</li>
+                        </ul>
+                    </div>
+
+                    <div class="pros-cons cons">
+                        <h3>Considerations:</h3>
+                        <ul>
+                            <li>Chart might feel cramped below video</li>
+                            <li>Requires scrolling to see full chart</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Option B: Chart Replaces Sidebar -->
+                <div class="option-card option-b">
+                    <div class="option-title">Option B: Chart Replaces Sidebar</div>
+                    <div class="option-description">Chart takes the place of the work elements sidebar. Toggle switches between list and chart in sidebar position.</div>
+
+                    <div class="mockup">
+                        <div class="mockup-nav">
+                            <div class="mockup-nav-title">Yamazumi</div>
+                            <div class="mockup-nav-items">
+                                <span class="mockup-nav-item active">Analysis</span>
+                                <span class="mockup-nav-item">Charts</span>
+                            </div>
+                        </div>
+                        <div class="mockup-content">
+                            <div class="layout-grid">
+                                <div>
+                                    <div class="video-section">
+                                        <div>Video Player</div>
+                                    </div>
+                                    <div class="timeline">
+                                        <div class="timeline-bar">
+                                            <div class="breakpoint"></div>
+                                            <div class="breakpoint"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="sidebar">
+                                    <div class="toggle-buttons">
+                                        <button class="toggle-btn">📋 List</button>
+                                        <button class="toggle-btn active">📊 Chart</button>
+                                    </div>
+                                    <div class="chart-container" style="border: none; padding: 0;">
+                                        <div class="chart-title">Work Element Analysis</div>
+                                        <div class="stacked-bar">Install Bolt - 18.2s</div>
+                                        <div class="stacked-bar">Apply Sealant - 16.4s</div>
+                                        <div class="stacked-bar">Tighten Bolt - 14.7s</div>
+                                        <div class="stacked-bar">Return Tool - 14.5s</div>
+                                        <div class="stacked-bar">Pick Part - 12.5s</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pros-cons">
+                        <h3>Pros:</h3>
+                        <ul>
+                            <li>Chart gets dedicated space (full sidebar width)</li>
+                            <li>Side-by-side with video (easy comparison)</li>
+                            <li>No scrolling needed for chart</li>
+                            <li>Clear toggle between list and chart</li>
+                        </ul>
+                    </div>
+
+                    <div class="pros-cons cons">
+                        <h3>Considerations:</h3>
+                        <ul>
+                            <li>Can't see list and chart simultaneously</li>
+                            <li>Chart might be narrower than full width</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Option C: Chart in Modal/Overlay -->
+            <div class="option-card" style="margin-top: 2rem;">
+                <div class="option-title">Option C: Chart in Modal/Overlay</div>
+                <div class="option-description">Chart opens in a modal overlay, taking full focus. User can close to return to analysis view.</div>
+
+                <div style="position: relative; height: 400px;">
+                    <div class="mockup" style="opacity: 0.5;">
+                        <div class="mockup-nav">
+                            <div class="mockup-nav-title">Yamazumi</div>
+                            <div class="mockup-nav-items">
+                                <span class="mockup-nav-item active">Analysis</span>
+                                <span class="mockup-nav-item">Charts</span>
+                            </div>
+                        </div>
+                        <div class="mockup-content">
+                            <div class="layout-grid">
+                                <div>
+                                    <div class="video-section">
+                                        <div>Video Player</div>
+                                    </div>
+                                    <div class="timeline">
+                                        <div class="timeline-bar">
+                                            <div class="breakpoint"></div>
+                                            <div class="breakpoint"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="sidebar">
+                                    <div style="text-align: center; color: #64748b; padding: 2rem;">
+                                        Work elements list
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="option-c">
+                        <div class="modal-overlay"></div>
+                        <div class="chart-container">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                                <div class="chart-title">Work Element Analysis</div>
+                                <button style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #64748b;">×</button>
+                            </div>
+                            <div class="stacked-bar" style="height: 50px; font-size: 1rem;">Install Bolt - 18.2s</div>
+                            <div class="stacked-bar" style="height: 50px; font-size: 1rem;">Apply Sealant - 16.4s</div>
+                            <div class="stacked-bar" style="height: 50px; font-size: 1rem;">Tighten Bolt - 14.7s</div>
+                            <div class="stacked-bar" style="height: 50px; font-size: 1rem;">Return Tool - 14.5s</div>
+                            <div class="stacked-bar" style="height: 50px; font-size: 1rem;">Pick Part - 12.5s</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pros-cons">
+                    <h3>Pros:</h3>
+                    <ul>
+                        <li>Chart gets full focus and space</li>
+                        <li>Can be larger and more detailed</li>
+                        <li>Doesn't clutter analysis interface</li>
+                        <li>Good for presentation/sharing</li>
+                    </ul>
+                </div>
+
+                <div class="pros-cons cons">
+                    <h3>Considerations:</h3>
+                    <ul>
+                        <li>Extra click to view chart</li>
+                        <li>Can't see video and chart simultaneously</li>
+                        <li>Modal might feel like extra step</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hierarchy Selection Section -->
+        <div class="section">
+            <div class="section-title">2. Factory Hierarchy Selection</div>
+            <p style="color: #64748b; margin-bottom: 2rem;">How should users select which factory level to view in Yamazumi charts?</p>
+
+            <div class="hierarchy-options">
+                <!-- Option 1: Dropdown -->
+                <div class="option-card">
+                    <div class="option-title">Option 1: Dropdown Selector</div>
+                    <div class="option-description">Simple dropdown menu showing hierarchy levels. Select one level to view.</div>
+
+                    <div class="hierarchy-mockup">
+                        <div class="hierarchy-title">Select View Level</div>
+                        <select class="dropdown-select">
+                            <option>Entire Factory</option>
+                            <option>Section A</option>
+                            <option>Section B</option>
+                            <option>Section A > Main Line</option>
+                            <option>Section A > Main Line > Subassembly 1</option>
+                            <option>Section A > Main Line > Subassembly 1 > Station 3</option>
+                        </select>
+                        <div style="padding: 1rem; background: #f8fafc; border-radius: 6px; margin-top: 1rem;">
+                            <div style="font-weight: 600; margin-bottom: 0.5rem;">Current Selection:</div>
+                            <div style="color: #64748b;">Section A > Main Line</div>
+                        </div>
+                    </div>
+
+                    <div class="pros-cons">
+                        <h3>Pros:</h3>
+                        <ul>
+                            <li>Simple and familiar</li>
+                            <li>Takes minimal space</li>
+                            <li>Easy to implement</li>
+                        </ul>
+                    </div>
+
+                    <div class="pros-cons cons">
+                        <h3>Considerations:</h3>
+                        <ul>
+                            <li>Hard to see full hierarchy at once</li>
+                            <li>Can't easily compare levels</li>
+                            <li>Nested options can be long</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Option 2: Tabs -->
+                <div class="option-card">
+                    <div class="option-title">Option 2: Tabs</div>
+                    <div class="option-description">Tab interface showing different hierarchy levels. Switch between tabs to view different levels.</div>
+
+                    <div class="hierarchy-mockup">
+                        <div class="hierarchy-title">View Level</div>
+                        <div class="tabs-container">
+                            <div class="tabs">
+                                <button class="tab">Factory</button>
+                                <button class="tab">Section A</button>
+                                <button class="tab active">Main Line</button>
+                                <button class="tab">Subassembly 1</button>
+                            </div>
+                        </div>
+                        <div class="tab-content">
+                            <div style="padding: 1rem; background: #f8fafc; border-radius: 6px;">
+                                <div style="font-weight: 600; margin-bottom: 0.5rem;">Viewing: Main Line</div>
+                                <div style="color: #64748b; font-size: 0.9rem;">Shows all stations in Main Line</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pros-cons">
+                        <h3>Pros:</h3>
+                        <ul>
+                            <li>Quick switching between levels</li>
+                            <li>Visual indication of current level</li>
+                            <li>Good for horizontal hierarchy</li>
+                        </ul>
+                    </div>
+
+                    <div class="pros-cons cons">
+                        <h3>Considerations:</h3>
+                        <ul>
+                            <li>Limited to few levels (tabs get crowded)</li>
+                            <li>Can't see hierarchy structure</li>
+                            <li>Hard to compare multiple levels</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Option 3: Hierarchical Tree -->
+                <div class="option-card">
+                    <div class="option-title">Option 3: Hierarchical Tree</div>
+                    <div class="option-description">Expandable tree showing full factory structure. Click nodes to view that level. Multi-select for comparison.</div>
+
+                    <div class="hierarchy-mockup">
+                        <div class="hierarchy-title">Factory Structure</div>
+                        <div class="tree-container">
+                            <div class="tree-node">
+                                <div class="tree-node-label">
+                                    <span class="tree-toggle">▼</span>
+                                    <span class="tree-icon">🏭</span>
+                                    <span>Entire Factory</span>
+                                </div>
+                                <div class="tree-children">
+                                    <div class="tree-node">
+                                        <div class="tree-node-label">
+                                            <span class="tree-toggle">▼</span>
+                                            <span class="tree-icon">📦</span>
+                                            <span>Section A</span>
+                                        </div>
+                                        <div class="tree-children">
+                                            <div class="tree-node">
+                                                <div class="tree-node-label selected">
+                                                    <span class="tree-toggle">▶</span>
+                                                    <span class="tree-icon">📊</span>
+                                                    <span>Main Line</span>
+                                                </div>
+                                                <div class="tree-children">
+                                                    <div class="tree-node">
+                                                        <div class="tree-node-label">
+                                                            <span class="tree-toggle">▶</span>
+                                                            <span class="tree-icon">🔧</span>
+                                                            <span>Subassembly 1</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="tree-node">
+                                                        <div class="tree-node-label">
+                                                            <span class="tree-toggle">▶</span>
+                                                            <span class="tree-icon">🔧</span>
+                                                            <span>Subassembly 2</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="tree-node">
+                                        <div class="tree-node-label">
+                                            <span class="tree-toggle">▶</span>
+                                            <span class="tree-icon">📦</span>
+                                            <span>Section B</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="margin-top: 1rem; padding: 0.75rem; background: #eff6ff; border-radius: 6px; font-size: 0.9rem; color: #1e40af;">
+                            💡 Tip: Select multiple nodes to compare side-by-side
+                        </div>
+                    </div>
+
+                    <div class="pros-cons">
+                        <h3>Pros:</h3>
+                        <ul>
+                            <li>Shows full hierarchy structure</li>
+                            <li>Easy to navigate and understand</li>
+                            <li>Supports multi-select for comparison</li>
+                            <li>Scalable to any hierarchy depth</li>
+                            <li>Visual representation of factory structure</li>
+                        </ul>
+                    </div>
+
+                    <div class="pros-cons cons">
+                        <h3>Considerations:</h3>
+                        <ul>
+                            <li>Takes more space than dropdown</li>
+                            <li>More complex to implement</li>
+                            <li>Might be overkill for simple factories</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="comparison-note">
+            <h3>💡 Recommendations</h3>
+            <p>
+                <strong>Chart Placement:</strong> Option B (Chart Replaces Sidebar) works best with Direction 2 (Dense Dashboard). 
+                The side-by-side layout allows users to watch video and see chart simultaneously, and the toggle keeps the interface clean.
+            </p>
+            <p style="margin-top: 1rem;">
+                <strong>Hierarchy Selection:</strong> Option 3 (Hierarchical Tree) provides the most flexibility and aligns with your requirement 
+                for modular, hierarchical viewing. It supports multi-select for side-by-side comparison and scales to any factory size. 
+                For simpler factories, the tree can be collapsed to show only relevant levels.
+            </p>
+        </div>
+    </div>
+</body>
+</html>

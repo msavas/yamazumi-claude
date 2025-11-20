@@ -1,0 +1,1069 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yamazumi - Macro/Micro Aggregation with Click-to-Zoom</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+            background: #f5f5f5;
+            color: #1a1a1a;
+            line-height: 1.6;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            color: #1e293b;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: #64748b;
+            margin-bottom: 3rem;
+        }
+
+        .section {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #1e293b;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 0.5rem;
+        }
+
+        .section-description {
+            color: #64748b;
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
+        }
+
+        .mockup {
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            overflow: hidden;
+            background: white;
+        }
+
+        .mockup-nav {
+            background: #1e293b;
+            color: white;
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .mockup-nav-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .mockup-nav-items {
+            display: flex;
+            gap: 2rem;
+            font-size: 0.9rem;
+        }
+
+        .mockup-nav-item {
+            opacity: 0.8;
+        }
+
+        .mockup-nav-item.active {
+            opacity: 1;
+            font-weight: 500;
+        }
+
+        .breadcrumb {
+            background: #f8fafc;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 0.75rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .breadcrumb-item {
+            color: #2563eb;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .breadcrumb-item:hover {
+            text-decoration: underline;
+        }
+
+        .breadcrumb-separator {
+            color: #cbd5e1;
+        }
+
+        .breadcrumb-current {
+            color: #1e293b;
+            font-weight: 500;
+        }
+
+        .back-button {
+            background: white;
+            border: 1px solid #e2e8f0;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            color: #1e293b;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.2s ease;
+        }
+
+        .back-button:hover {
+            background: #f8fafc;
+            border-color: #cbd5e1;
+        }
+
+        .mockup-content {
+            padding: 2rem;
+        }
+
+        .view-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .view-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .view-stats {
+            display: flex;
+            gap: 2rem;
+            font-size: 0.9rem;
+            color: #64748b;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .stat-value {
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        /* View Toggle */
+        .view-toggle {
+            display: flex;
+            gap: 0.5rem;
+            background: #f1f5f9;
+            padding: 0.25rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+        }
+
+        .toggle-button {
+            flex: 1;
+            padding: 0.5rem 1rem;
+            border: none;
+            background: transparent;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #64748b;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .toggle-button.active {
+            background: white;
+            color: #2563eb;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        /* Vertical Yamazumi Chart (Macro View) */
+        .yamazumi-chart-container {
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 2rem;
+            overflow-x: auto;
+        }
+
+        .yamazumi-chart {
+            display: flex;
+            align-items: flex-end;
+            gap: 0.75rem;
+            min-height: 400px;
+            padding-bottom: 2rem;
+        }
+
+        .station-column {
+            flex: 1;
+            min-width: 60px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .station-column:hover {
+            transform: translateY(-4px);
+        }
+
+        .station-column.highlight {
+            outline: 3px solid #2563eb;
+            outline-offset: 4px;
+            border-radius: 4px;
+        }
+
+        .station-bar {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            border-radius: 4px 4px 0 0;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .station-segment {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: 500;
+            color: white;
+            min-height: 20px;
+            transition: all 0.2s ease;
+        }
+
+        .station-segment:hover {
+            filter: brightness(1.1);
+        }
+
+        .station-segment.waste {
+            background: #ef4444;
+        }
+
+        .station-segment.nva {
+            background: #f59e0b;
+        }
+
+        .station-segment.value {
+            background: #10b981;
+        }
+
+        /* Work Element Segments (Alternative View) */
+        .work-element-segment {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.65rem;
+            font-weight: 500;
+            color: white;
+            min-height: 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .work-element-segment:hover {
+            filter: brightness(1.15);
+            z-index: 10;
+        }
+
+        .work-element-segment:last-child {
+            border-bottom: none;
+        }
+
+        .work-element-segment.install-bolt { background: #3b82f6; }
+        .work-element-segment.position-part { background: #8b5cf6; }
+        .work-element-segment.tighten-screw { background: #06b6d4; }
+        .work-element-segment.inspect-quality { background: #14b8a6; }
+        .work-element-segment.move-station { background: #f59e0b; }
+        .work-element-segment.wait-material { background: #ef4444; }
+
+        .station-label {
+            margin-top: 0.5rem;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: #1e293b;
+            text-align: center;
+        }
+
+        .station-total {
+            margin-top: 0.25rem;
+            font-size: 0.75rem;
+            color: #64748b;
+            text-align: center;
+        }
+
+        .bottleneck-indicator {
+            position: absolute;
+            top: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 6px solid transparent;
+            border-right: 6px solid transparent;
+            border-top: 8px solid #ef4444;
+        }
+
+        /* Work Element Detail Tooltip */
+        .element-tooltip {
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1e293b;
+            color: white;
+            padding: 0.75rem 1rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            white-space: nowrap;
+            margin-bottom: 0.5rem;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+            z-index: 100;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+
+        .element-tooltip::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 6px solid transparent;
+            border-right: 6px solid transparent;
+            border-top: 6px solid #1e293b;
+        }
+
+        .work-element-segment:hover .element-tooltip {
+            opacity: 1;
+        }
+
+        .tooltip-title {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .tooltip-breakdown {
+            display: flex;
+            gap: 0.5rem;
+            font-size: 0.75rem;
+            opacity: 0.9;
+        }
+
+        .tooltip-badge {
+            padding: 0.15rem 0.4rem;
+            border-radius: 3px;
+            font-size: 0.7rem;
+        }
+
+        .tooltip-badge.waste {
+            background: #ef4444;
+        }
+
+        .tooltip-badge.nva {
+            background: #f59e0b;
+        }
+
+        .tooltip-badge.value {
+            background: #10b981;
+        }
+
+        /* Micro View - Detailed Work Elements */
+        .micro-chart-container {
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 1.5rem;
+        }
+
+        .micro-chart {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .work-element-bar {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.75rem;
+            background: white;
+            border-radius: 6px;
+            border: 1px solid #e2e8f0;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .work-element-bar:hover {
+            border-color: #2563eb;
+            box-shadow: 0 2px 8px rgba(37, 99, 235, 0.1);
+        }
+
+        .element-label {
+            min-width: 150px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #1e293b;
+        }
+
+        .element-bar-chart {
+            flex: 1;
+            height: 50px;
+            display: flex;
+            border-radius: 4px;
+            overflow: hidden;
+            border: 2px solid #e2e8f0;
+        }
+
+        .element-segment {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: white;
+            border-right: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .element-segment:last-child {
+            border-right: none;
+        }
+
+        .element-segment.waste {
+            background: #ef4444;
+        }
+
+        .element-segment.nva {
+            background: #f59e0b;
+        }
+
+        .element-segment.value {
+            background: #10b981;
+        }
+
+        .element-duration {
+            min-width: 70px;
+            text-align: right;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        /* Legend */
+        .legend {
+            display: flex;
+            gap: 2rem;
+            padding: 1rem;
+            background: #f8fafc;
+            border-radius: 8px;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .legend-color {
+            width: 24px;
+            height: 24px;
+            border-radius: 4px;
+        }
+
+        .legend-color.waste {
+            background: #ef4444;
+        }
+
+        .legend-color.nva {
+            background: #f59e0b;
+        }
+
+        .legend-color.value {
+            background: #10b981;
+        }
+
+        /* Info Box */
+        .info-box {
+            background: #f8fafc;
+            border-left: 4px solid #2563eb;
+            padding: 1.5rem;
+            margin-top: 2rem;
+            border-radius: 4px;
+        }
+
+        .info-title {
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 0.75rem;
+            font-size: 1.1rem;
+        }
+
+        .info-text {
+            color: #64748b;
+            font-size: 0.95rem;
+            line-height: 1.8;
+        }
+
+        .info-text ul {
+            margin-left: 1.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .info-text li {
+            margin-bottom: 0.5rem;
+        }
+
+        .highlight {
+            background: #fef3c7;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-weight: 500;
+        }
+
+        .note-box {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 1rem;
+            border-radius: 4px;
+            margin-top: 1rem;
+        }
+
+        .note-title {
+            font-weight: 600;
+            color: #92400e;
+            margin-bottom: 0.5rem;
+        }
+
+        .note-text {
+            color: #78350f;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Macro/Micro Aggregation with Click-to-Zoom</h1>
+        <p class="subtitle">Factory-wide views with vertical Yamazumi charts and work element breakdown</p>
+
+        <!-- Macro View - Version 1: Waste/NVA/Value -->
+        <div class="section">
+            <h2 class="section-title">1. Macro View - Waste/NVA/Value Breakdown</h2>
+            <p class="section-description">Traditional Yamazumi chart showing vertical stacked bars with waste, non-value-added, and value-added categories. Click any station to zoom into detailed view.</p>
+            
+            <div class="mockup">
+                <div class="mockup-nav">
+                    <div class="mockup-nav-title">Yamazumi</div>
+                    <div class="mockup-nav-items">
+                        <span class="mockup-nav-item">Analysis</span>
+                        <span class="mockup-nav-item active">Charts</span>
+                        <span class="mockup-nav-item">Upload</span>
+                    </div>
+                </div>
+                
+                <div class="mockup-content">
+                    <div class="view-header">
+                        <div>
+                            <div class="view-title">Factory-Wide Yamazumi Chart</div>
+                            <div style="font-size: 0.85rem; color: #64748b; margin-top: 0.25rem;">
+                                Section: Assembly Line A | Line: Main Assembly | Subassembly: Engine Block
+                            </div>
+                        </div>
+                        <div class="view-stats">
+                            <div class="stat-item">
+                                <span>Stations:</span>
+                                <span class="stat-value">200</span>
+                            </div>
+                            <div class="stat-item">
+                                <span>Total Cycle Time:</span>
+                                <span class="stat-value">2,450s</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="view-toggle">
+                        <button class="toggle-button active">Waste/NVA/Value</button>
+                        <button class="toggle-button">Work Elements</button>
+                    </div>
+
+                    <div class="yamazumi-chart-container">
+                        <div class="yamazumi-chart">
+                            <!-- Station 1 -->
+                            <div class="station-column" style="position: relative;">
+                                <div class="station-bar" style="height: 180px;">
+                                    <div class="station-segment waste" style="height: 27px;">Waste</div>
+                                    <div class="station-segment nva" style="height: 45px;">NVA</div>
+                                    <div class="station-segment value" style="height: 108px;">Value</div>
+                                </div>
+                                <div class="station-label">Station 1</div>
+                                <div class="station-total">45.2s</div>
+                            </div>
+                            
+                            <!-- Station 2 (Bottleneck) -->
+                            <div class="station-column highlight" style="position: relative;">
+                                <div class="bottleneck-indicator"></div>
+                                <div class="station-bar" style="height: 211px;">
+                                    <div class="station-segment waste" style="height: 63px;">Waste</div>
+                                    <div class="station-segment nva" style="height: 42px;">NVA</div>
+                                    <div class="station-segment value" style="height: 106px;">Value</div>
+                                </div>
+                                <div class="station-label">Station 2</div>
+                                <div class="station-total">52.8s</div>
+                            </div>
+                            
+                            <!-- Station 3 -->
+                            <div class="station-column" style="position: relative;">
+                                <div class="station-bar" style="height: 154px;">
+                                    <div class="station-segment waste" style="height: 15px;">Waste</div>
+                                    <div class="station-segment nva" style="height: 46px;">NVA</div>
+                                    <div class="station-segment value" style="height: 93px;">Value</div>
+                                </div>
+                                <div class="station-label">Station 3</div>
+                                <div class="station-total">38.5s</div>
+                            </div>
+                            
+                            <!-- Station 4 -->
+                            <div class="station-column" style="position: relative;">
+                                <div class="station-bar" style="height: 165px;">
+                                    <div class="station-segment waste" style="height: 33px;">Waste</div>
+                                    <div class="station-segment nva" style="height: 41px;">NVA</div>
+                                    <div class="station-segment value" style="height: 91px;">Value</div>
+                                </div>
+                                <div class="station-label">Station 4</div>
+                                <div class="station-total">41.3s</div>
+                            </div>
+                            
+                            <!-- Station 5 -->
+                            <div class="station-column" style="position: relative;">
+                                <div class="station-bar" style="height: 159px;">
+                                    <div class="station-segment waste" style="height: 19px;">Waste</div>
+                                    <div class="station-segment nva" style="height: 45px;">NVA</div>
+                                    <div class="station-segment value" style="height: 95px;">Value</div>
+                                </div>
+                                <div class="station-label">Station 5</div>
+                                <div class="station-total">39.7s</div>
+                            </div>
+                            
+                            <!-- More stations... -->
+                            <div style="min-width: 60px; display: flex; align-items: center; justify-content: center; color: #64748b; font-size: 0.9rem; font-style: italic;">
+                                ... 195 more
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="legend">
+                        <div class="legend-item">
+                            <div class="legend-color waste"></div>
+                            <span>Waste (Red)</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color nva"></div>
+                            <span>Non-Value-Added (Yellow)</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color value"></div>
+                            <span>Value-Added (Green)</span>
+                        </div>
+                        <div class="legend-item" style="margin-left: auto;">
+                            <span style="color: #ef4444;">🔴</span>
+                            <span>Bottleneck Indicator</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Macro View - Version 2: Work Elements -->
+        <div class="section">
+            <h2 class="section-title">2. Macro View - Work Elements Breakdown</h2>
+            <p class="section-description">Alternative view showing individual work elements within each station. Hover over work elements to see their waste/NVA/value breakdown. Click station to zoom into detailed view.</p>
+            
+            <div class="mockup">
+                <div class="mockup-nav">
+                    <div class="mockup-nav-title">Yamazumi</div>
+                    <div class="mockup-nav-items">
+                        <span class="mockup-nav-item">Analysis</span>
+                        <span class="mockup-nav-item active">Charts</span>
+                        <span class="mockup-nav-item">Upload</span>
+                    </div>
+                </div>
+                
+                <div class="mockup-content">
+                    <div class="view-header">
+                        <div>
+                            <div class="view-title">Factory-Wide Yamazumi Chart</div>
+                            <div style="font-size: 0.85rem; color: #64748b; margin-top: 0.25rem;">
+                                Section: Assembly Line A | Line: Main Assembly | Subassembly: Engine Block
+                            </div>
+                        </div>
+                        <div class="view-stats">
+                            <div class="stat-item">
+                                <span>Stations:</span>
+                                <span class="stat-value">200</span>
+                            </div>
+                            <div class="stat-item">
+                                <span>Total Cycle Time:</span>
+                                <span class="stat-value">2,450s</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="view-toggle">
+                        <button class="toggle-button">Waste/NVA/Value</button>
+                        <button class="toggle-button active">Work Elements</button>
+                    </div>
+
+                    <div class="yamazumi-chart-container">
+                        <div class="yamazumi-chart">
+                            <!-- Station 1 -->
+                            <div class="station-column" style="position: relative;">
+                                <div class="station-bar" style="height: 180px;">
+                                    <div class="work-element-segment install-bolt" style="height: 50px;">
+                                        Install Bolt
+                                        <div class="element-tooltip">
+                                            <div class="tooltip-title">Install Bolt (12.5s)</div>
+                                            <div class="tooltip-breakdown">
+                                                <span class="tooltip-badge waste">Waste: 2.5s</span>
+                                                <span class="tooltip-badge nva">NVA: 3.8s</span>
+                                                <span class="tooltip-badge value">Value: 6.2s</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="work-element-segment position-part" style="height: 33px;">
+                                        Position Part
+                                        <div class="element-tooltip">
+                                            <div class="tooltip-title">Position Part (8.2s)</div>
+                                            <div class="tooltip-breakdown">
+                                                <span class="tooltip-badge waste">Waste: 3.3s</span>
+                                                <span class="tooltip-badge nva">NVA: 2.9s</span>
+                                                <span class="tooltip-badge value">Value: 2.0s</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="work-element-segment tighten-screw" style="height: 27px;">
+                                        Tighten
+                                        <div class="element-tooltip">
+                                            <div class="tooltip-title">Tighten Screw (6.8s)</div>
+                                            <div class="tooltip-breakdown">
+                                                <span class="tooltip-badge waste">Waste: 0.7s</span>
+                                                <span class="tooltip-badge nva">NVA: 1.4s</span>
+                                                <span class="tooltip-badge value">Value: 4.7s</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="work-element-segment inspect-quality" style="height: 21px;">
+                                        Inspect
+                                        <div class="element-tooltip">
+                                            <div class="tooltip-title">Inspect Quality (5.3s)</div>
+                                            <div class="tooltip-breakdown">
+                                                <span class="tooltip-badge waste">Waste: 0.8s</span>
+                                                <span class="tooltip-badge nva">NVA: 0.5s</span>
+                                                <span class="tooltip-badge value">Value: 4.0s</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="work-element-segment move-station" style="height: 42px;">
+                                        Move
+                                        <div class="element-tooltip">
+                                            <div class="tooltip-title">Move to Next (10.5s)</div>
+                                            <div class="tooltip-breakdown">
+                                                <span class="tooltip-badge waste">Waste: 10.5s</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="work-element-segment wait-material" style="height: 7px;">
+                                        Wait
+                                        <div class="element-tooltip">
+                                            <div class="tooltip-title">Wait Material (1.9s)</div>
+                                            <div class="tooltip-breakdown">
+                                                <span class="tooltip-badge waste">Waste: 1.9s</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="station-label">Station 1</div>
+                                <div class="station-total">45.2s</div>
+                            </div>
+                            
+                            <!-- Station 2 (Bottleneck) -->
+                            <div class="station-column highlight" style="position: relative;">
+                                <div class="bottleneck-indicator"></div>
+                                <div class="station-bar" style="height: 211px;">
+                                    <div class="work-element-segment install-bolt" style="height: 50px;">
+                                        Install Bolt
+                                        <div class="element-tooltip">
+                                            <div class="tooltip-title">Install Bolt (12.5s)</div>
+                                            <div class="tooltip-breakdown">
+                                                <span class="tooltip-badge waste">Waste: 3.8s</span>
+                                                <span class="tooltip-badge nva">NVA: 2.5s</span>
+                                                <span class="tooltip-badge value">Value: 6.2s</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="work-element-segment position-part" style="height: 50px;">
+                                        Position Part
+                                        <div class="element-tooltip">
+                                            <div class="tooltip-title">Position Part (10.6s)</div>
+                                            <div class="tooltip-breakdown">
+                                                <span class="tooltip-badge waste">Waste: 4.2s</span>
+                                                <span class="tooltip-badge nva">NVA: 3.7s</span>
+                                                <span class="tooltip-badge value">Value: 2.7s</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="work-element-segment tighten-screw" style="height: 27px;">
+                                        Tighten
+                                        <div class="element-tooltip">
+                                            <div class="tooltip-title">Tighten Screw (6.8s)</div>
+                                            <div class="tooltip-breakdown">
+                                                <span class="tooltip-badge waste">Waste: 0.7s</span>
+                                                <span class="tooltip-badge nva">NVA: 1.4s</span>
+                                                <span class="tooltip-badge value">Value: 4.7s</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="work-element-segment inspect-quality" style="height: 21px;">
+                                        Inspect
+                                        <div class="element-tooltip">
+                                            <div class="tooltip-title">Inspect Quality (5.3s)</div>
+                                            <div class="tooltip-breakdown">
+                                                <span class="tooltip-badge waste">Waste: 0.8s</span>
+                                                <span class="tooltip-badge nva">NVA: 0.5s</span>
+                                                <span class="tooltip-badge value">Value: 4.0s</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="work-element-segment move-station" style="height: 42px;">
+                                        Move
+                                        <div class="element-tooltip">
+                                            <div class="tooltip-title">Move to Next (10.5s)</div>
+                                            <div class="tooltip-breakdown">
+                                                <span class="tooltip-badge waste">Waste: 10.5s</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="work-element-segment wait-material" style="height: 21px;">
+                                        Wait
+                                        <div class="element-tooltip">
+                                            <div class="tooltip-title">Wait Material (7.1s)</div>
+                                            <div class="tooltip-breakdown">
+                                                <span class="tooltip-badge waste">Waste: 7.1s</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="station-label">Station 2</div>
+                                <div class="station-total">52.8s</div>
+                            </div>
+                            
+                            <!-- Station 3 -->
+                            <div class="station-column" style="position: relative;">
+                                <div class="station-bar" style="height: 154px;">
+                                    <div class="work-element-segment install-bolt" style="height: 50px;">Install</div>
+                                    <div class="work-element-segment position-part" style="height: 33px;">Position</div>
+                                    <div class="work-element-segment tighten-screw" style="height: 27px;">Tighten</div>
+                                    <div class="work-element-segment inspect-quality" style="height: 21px;">Inspect</div>
+                                    <div class="work-element-segment move-station" style="height: 23px;">Move</div>
+                                </div>
+                                <div class="station-label">Station 3</div>
+                                <div class="station-total">38.5s</div>
+                            </div>
+                            
+                            <!-- More stations... -->
+                            <div style="min-width: 60px; display: flex; align-items: center; justify-content: center; color: #64748b; font-size: 0.9rem; font-style: italic;">
+                                ... 197 more
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="note-box">
+                        <div class="note-title">💡 Hover over work elements</div>
+                        <div class="note-text">Hover over any work element segment to see its waste/NVA/value breakdown in a tooltip. Click the work element to view the video clip.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Micro View -->
+        <div class="section">
+            <h2 class="section-title">3. Micro View (Single Station Detail)</h2>
+            <p class="section-description">Detailed view showing individual work elements with their waste/NVA/value breakdown. Click work element to view video clip.</p>
+            
+            <div class="mockup">
+                <div class="mockup-nav">
+                    <div class="mockup-nav-title">Yamazumi</div>
+                    <div class="mockup-nav-items">
+                        <span class="mockup-nav-item">Analysis</span>
+                        <span class="mockup-nav-item active">Charts</span>
+                        <span class="mockup-nav-item">Upload</span>
+                    </div>
+                </div>
+                
+                <div class="breadcrumb">
+                    <a href="#" class="breadcrumb-item">Factory View</a>
+                    <span class="breadcrumb-separator">›</span>
+                    <span class="breadcrumb-current">Station 2</span>
+                </div>
+                
+                <div class="mockup-content">
+                    <div class="view-header">
+                        <div>
+                            <div class="view-title">Station 2 - Detailed Work Elements</div>
+                            <div style="font-size: 0.85rem; color: #64748b; margin-top: 0.25rem;">
+                                Total Cycle Time: 52.8s | Waste: 30% | NVA: 20% | Value: 50%
+                            </div>
+                        </div>
+                        <button class="back-button">
+                            ← Back to Factory View
+                        </button>
+                    </div>
+
+                    <div class="micro-chart-container">
+                        <div class="micro-chart">
+                            <div class="work-element-bar">
+                                <div class="element-label">Install Bolt</div>
+                                <div class="element-bar-chart">
+                                    <div class="element-segment waste" style="width: 30%;">Waste: 3.8s</div>
+                                    <div class="element-segment nva" style="width: 20%;">NVA: 2.5s</div>
+                                    <div class="element-segment value" style="width: 50%;">Value: 6.2s</div>
+                                </div>
+                                <div class="element-duration">12.5s</div>
+                            </div>
+                            
+                            <div class="work-element-bar">
+                                <div class="element-label">Position Part</div>
+                                <div class="element-bar-chart">
+                                    <div class="element-segment waste" style="width: 40%;">Waste: 4.2s</div>
+                                    <div class="element-segment nva" style="width: 35%;">NVA: 3.7s</div>
+                                    <div class="element-segment value" style="width: 25%;">Value: 2.7s</div>
+                                </div>
+                                <div class="element-duration">10.6s</div>
+                            </div>
+                            
+                            <div class="work-element-bar">
+                                <div class="element-label">Tighten Screw</div>
+                                <div class="element-bar-chart">
+                                    <div class="element-segment waste" style="width: 10%;">Waste: 0.7s</div>
+                                    <div class="element-segment nva" style="width: 20%;">NVA: 1.4s</div>
+                                    <div class="element-segment value" style="width: 70%;">Value: 4.7s</div>
+                                </div>
+                                <div class="element-duration">6.8s</div>
+                            </div>
+                            
+                            <div class="work-element-bar">
+                                <div class="element-label">Inspect Quality</div>
+                                <div class="element-bar-chart">
+                                    <div class="element-segment waste" style="width: 15%;">Waste: 0.8s</div>
+                                    <div class="element-segment nva" style="width: 10%;">NVA: 0.5s</div>
+                                    <div class="element-segment value" style="width: 75%;">Value: 4.0s</div>
+                                </div>
+                                <div class="element-duration">5.3s</div>
+                            </div>
+                            
+                            <div class="work-element-bar">
+                                <div class="element-label">Move to Next Station</div>
+                                <div class="element-bar-chart">
+                                    <div class="element-segment waste" style="width: 100%;">Waste: 10.5s</div>
+                                </div>
+                                <div class="element-duration">10.5s</div>
+                            </div>
+                            
+                            <div class="work-element-bar">
+                                <div class="element-label">Wait for Material</div>
+                                <div class="element-bar-chart">
+                                    <div class="element-segment waste" style="width: 100%;">Waste: 7.1s</div>
+                                </div>
+                                <div class="element-duration">7.1s</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="legend" style="margin-top: 1rem;">
+                        <div class="legend-item">
+                            <div class="legend-color waste"></div>
+                            <span>Waste (Red)</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color nva"></div>
+                            <span>Non-Value-Added (Yellow)</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color value"></div>
+                            <span>Value-Added (Green)</span>
+                        </div>
+                        <div class="legend-item" style="margin-left: auto;">
+                            <span style="color: #64748b;">💡 Click work element to view video clip</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Info Box -->
+        <div class="info-box">
+            <div class="info-title">Macro/Micro Aggregation Specifications</div>
+            <div class="info-text">
+                <p><strong>Chart Orientation:</strong></p>
+                <ul>
+                    <li><span class="highlight">Factory-Wide View:</span> Vertical stacked bar charts (traditional Yamazumi format)</li>
+                    <li><span class="highlight">Single Video Analysis:</span> Horizontal stacked bar charts (better for single video UX)</li>
+                </ul>
+                <p style="margin-top: 1rem;"><strong>View Toggle:</strong></p>
+                <ul>
+                    <li><span class="highlight">Waste/NVA/Value View:</span> Shows aggregated categories per station (traditional view)</li>
+                    <li><span class="highlight">Work Elements View:</span> Shows individual work elements within each station (rebalancing view)</li>
+                    <li>Toggle between views to see different perspectives</li>
+                </ul>
+                <p style="margin-top: 1rem;"><strong>Work Element Interactions:</strong></p>
+                <ul>
+                    <li><span class="highlight">Hover:</span> Tooltip shows waste/NVA/value breakdown for that work element</li>
+                    <li><span class="highlight">Click:</span> View video clip of that work element</li>
+                    <li>Enables rebalancing analysis - see which work elements can be moved between stations</li>
+                </ul>
+                <p style="margin-top: 1rem;"><strong>Rationale:</strong> Vertical charts are traditional for Yamazumi and better for comparing multiple stations. Work element view enables rebalancing analysis by showing which elements can be moved between stations. Hover tooltips provide quick insight without leaving the macro view.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
