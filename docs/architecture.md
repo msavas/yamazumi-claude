@@ -672,9 +672,11 @@ interface CategorizationSegment {
 **Storage:** Supabase Storage (encrypted video files)
 
 **Environment Variables:**
-- `NEXT_PUBLIC_SUPABASE_URL`
-- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+- `NEXT_PUBLIC_SUPABASE_URL` - Supabase project URL
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY` - Publishable key (new: `sb_publishable_*` or legacy JWT format)
+- `SUPABASE_SERVICE_ROLE_KEY` - Secret key for server-side admin operations (new: `sb_secret_*` or legacy JWT)
 - Validated with Zod in `lib/env.ts`
+- **Note:** Supabase updated their API key format (2024+). Both new (`sb_publishable_*/sb_secret_*`) and legacy (JWT) formats supported.
 
 **Deployment Process:**
 - Push to main branch → Automated build and deploy
