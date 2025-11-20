@@ -1,0 +1,297 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>1</epicId>
+    <storyId>2</storyId>
+    <title>Supabase Project Setup & Configuration</title>
+    <status>drafted</status>
+    <generatedAt>2025-11-20</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/1-2-supabase-project-setup-configuration.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>developer</asA>
+    <iWant>Supabase project configured with database and storage buckets</iWant>
+    <soThat>I can store encrypted videos and work element data securely</soThat>
+    <tasks>
+      <task id="1" ac="PostgreSQL database, Storage bucket, Environment variables">
+        <description>Create Supabase project and configure storage</description>
+        <subtasks>
+          <subtask>Create new Supabase project via Supabase Dashboard</subtask>
+          <subtask>Copy project URL and anon key for environment variables</subtask>
+          <subtask>Create storage bucket named `videos` for encrypted video files</subtask>
+          <subtask>Configure storage bucket permissions (authenticated users can upload/read their own videos)</subtask>
+          <subtask>Document Supabase project configuration details</subtask>
+        </subtasks>
+      </task>
+      <task id="2" ac="Supabase client library installed">
+        <description>Install Supabase client libraries</description>
+        <subtasks>
+          <subtask>Install @supabase/supabase-js: `npm install @supabase/supabase-js`</subtask>
+          <subtask>Install @supabase/ssr: `npm install @supabase/ssr`</subtask>
+          <subtask>Install Zod for environment validation: `npm install zod`</subtask>
+          <subtask>Verify packages are added to package.json dependencies</subtask>
+        </subtasks>
+      </task>
+      <task id="3" ac="Environment variables configured, properly secured">
+        <description>Configure environment variables</description>
+        <subtasks>
+          <subtask>Create `.env.local.example` file with template</subtask>
+          <subtask>Add required variables: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`</subtask>
+          <subtask>Create `.env.local` file (not committed) with actual Supabase credentials</subtask>
+          <subtask>Verify `.env.local` is in .gitignore</subtask>
+          <subtask>Add comments explaining each variable's purpose</subtask>
+        </subtasks>
+      </task>
+      <task id="4" ac="Environment variables configured">
+        <description>Create environment validation with Zod</description>
+        <subtasks>
+          <subtask>Create `lib/env.ts` file</subtask>
+          <subtask>Define Zod schema for required environment variables</subtask>
+          <subtask>Validate environment variables on app startup</subtask>
+          <subtask>Export typed environment object for use throughout app</subtask>
+          <subtask>Verify validation catches missing/invalid environment variables</subtask>
+        </subtasks>
+      </task>
+      <task id="5" ac="Supabase client library configured">
+        <description>Create Supabase client utilities</description>
+        <subtasks>
+          <subtask>Create `lib/supabase/` directory</subtask>
+          <subtask>Create `lib/supabase/client.ts` for browser client</subtask>
+          <subtask>Create `lib/supabase/server.ts` for server client using @supabase/ssr</subtask>
+          <subtask>Configure clients with validated environment variables</subtask>
+          <subtask>Export typed Supabase clients for use in components and server actions</subtask>
+        </subtasks>
+      </task>
+      <task id="6" ac="Connection tested and verified, Database connection established">
+        <description>Test Supabase connection</description>
+        <subtasks>
+          <subtask>Create simple test page or API route to verify database connection</subtask>
+          <subtask>Test database query (e.g., `SELECT 1` or query Supabase tables)</subtask>
+          <subtask>Test storage bucket access (list buckets or check bucket existence)</subtask>
+          <subtask>Verify browser client connects successfully</subtask>
+          <subtask>Verify server client connects successfully</subtask>
+          <subtask>Remove test code after verification</subtask>
+        </subtasks>
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="AC1">
+      <given>I have a Supabase account</given>
+      <when>I create a new Supabase project for Yamazumi</when>
+      <then>The project includes: PostgreSQL database initialized, Storage bucket created for encrypted videos, Environment variables configured (.env.local), Supabase client library installed and configured, Connection tested and verified</then>
+    </criterion>
+    <criterion id="AC2">
+      <and>Environment variables are properly secured (not committed to git)</and>
+    </criterion>
+    <criterion id="AC3">
+      <and>.env.example file documents required variables</and>
+    </criterion>
+    <criterion id="AC4">
+      <and>Database connection can be established from the application</and>
+    </criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc path="docs/architecture.md" section="Technology Stack Details - Supabase Integration">
+        <title>Supabase Integration Strategy (ADR-003)</title>
+        <snippet>Backend/Database: Supabase for PostgreSQL, Auth, Storage all-in-one. API Client: @supabase/supabase-js for browser operations. Authentication: @supabase/ssr for cookie-based server-side auth (Story 1.3). Storage: Supabase Storage for encrypted video files (Epic 2). Database: PostgreSQL for work elements, stations, videos (Epic 6).</snippet>
+      </doc>
+      <doc path="docs/architecture.md" section="Project Structure - lib/">
+        <title>Library Organization</title>
+        <snippet>lib/env.ts - Environment variable validation (Zod). lib/supabase/ - Supabase client setup (client.ts for browser client using @supabase/supabase-js, server.ts for server client using @supabase/ssr for cookie-based auth).</snippet>
+      </doc>
+      <doc path="docs/architecture.md" section="Deployment Architecture - Environment Variables">
+        <title>Environment Configuration</title>
+        <snippet>Required environment variables: NEXT_PUBLIC_SUPABASE_URL (Supabase project URL), NEXT_PUBLIC_SUPABASE_ANON_KEY (Supabase anonymous/public key). Validated with Zod in lib/env.ts. Catches configuration errors early before runtime failures.</snippet>
+      </doc>
+      <doc path="docs/epics.md" section="Epic 1: Foundation & Infrastructure - Story 1.2">
+        <title>Story Requirements</title>
+        <snippet>Supabase Project Setup & Configuration. Create Supabase project following security best practices. Set up storage bucket with appropriate permissions. Configure environment variables for local development. Install @supabase/supabase-js package. Create Supabase client utility in lib/supabase.ts. Note: Database schema will be created in Epic 6.</snippet>
+      </doc>
+      <doc path="docs/architecture.md" section="Novel Pattern Designs - Pattern 1">
+        <title>Secure Video Upload Context</title>
+        <snippet>Epic 2 will use Supabase Storage for encrypted video uploads. Client-side encryption using Web Crypto API (AES-256-GCM) before upload. Storage bucket named 'videos' for encrypted video files. Chunked upload for large files.</snippet>
+      </doc>
+      <doc path="docs/architecture.md" section="Implementation Patterns - Naming Conventions">
+        <title>Code Standards</title>
+        <snippet>Files: Utilities use camelCase.ts (e.g., env.ts, client.ts). Functions: camelCase. Constants: UPPER_SNAKE_CASE. Database: Tables snake_case plural, Columns snake_case, Foreign keys {table}_id.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <artifact path="package.json" kind="config" reason="Current dependencies - will be updated with Supabase packages">
+        <symbol>dependencies</symbol>
+        <current>next@16.0.3, react@19.2.0, react-dom@19.2.0</current>
+        <toAdd>@supabase/supabase-js, @supabase/ssr, zod</toAdd>
+      </artifact>
+      <artifact path=".gitignore" kind="config" lines="34" reason="Already configured to exclude .env* files">
+        <symbol>.env*</symbol>
+        <note>Line 34 contains .env* pattern - .env.local will be automatically excluded from git</note>
+      </artifact>
+      <artifact path="app/" kind="directory" reason="Existing Next.js App Router structure from Story 1.1">
+        <files>layout.tsx, page.tsx, globals.css, favicon.ico</files>
+        <note>Next.js 16 with App Router established in Story 1.1. Server-side authentication (Story 1.3) will use @supabase/ssr with this structure.</note>
+      </artifact>
+      <artifact path="README.md" kind="documentation" lines="90-105, 117-119" reason="Documents project structure and placeholder for environment setup">
+        <section>Project Structure - shows lib/, types/, store/, hooks/ directories planned</section>
+        <section>Environment Setup - placeholder noting "Environment variables will be configured in future stories" - this story fulfills that</section>
+      </artifact>
+    </code>
+    <dependencies>
+      <ecosystem name="npm">
+        <existing>
+          <package name="next" version="16.0.3" />
+          <package name="react" version="19.2.0" />
+          <package name="react-dom" version="19.2.0" />
+          <package name="typescript" version="^5" dev="true" />
+          <package name="tailwindcss" version="^4" dev="true" />
+          <package name="eslint" version="^9" dev="true" />
+          <package name="prettier" version="^3.6.2" dev="true" />
+          <package name="@playwright/test" version="^1.56.1" dev="true" />
+        </existing>
+        <toInstall reason="Story 1.2 requirements">
+          <package name="@supabase/supabase-js" version="latest" reason="Official Supabase client for browser operations" />
+          <package name="@supabase/ssr" version="latest" reason="Server-side Supabase client for Next.js App Router with cookie-based auth" />
+          <package name="zod" version="latest" reason="Environment variable validation with type-safe schema" />
+        </toInstall>
+      </ecosystem>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint category="security" source="architecture.md - Security Architecture">
+      Environment variables must not be committed to git. .env.local is excluded via .gitignore. Never commit Supabase keys to version control. Use NEXT_PUBLIC_ prefix only for client-side accessible variables. Anon key is safe to expose but still don't commit it for security hygiene. Service role key (if needed later) must NEVER be exposed to client.
+    </constraint>
+    <constraint category="architecture" source="architecture.md - ADR-003">
+      Use @supabase/ssr for cookie-based server-side authentication (not client-side). Set up middleware.ts for cookie checks before page renders (Story 1.3). HttpOnly cookies prevent XSS token theft.
+    </constraint>
+    <constraint category="code-quality" source="architecture.md - Implementation Patterns">
+      Follow naming conventions: Files use camelCase.ts (env.ts, client.ts, server.ts). Functions use camelCase. Constants use UPPER_SNAKE_CASE. Maintain consistent code organization.
+    </constraint>
+    <constraint category="environment" source="architecture.md - Deployment Architecture">
+      Environment validation must catch missing/invalid variables at app startup using Zod. Export typed environment object for type-safe access throughout application. Fail fast on configuration errors.
+    </constraint>
+    <constraint category="storage" source="story Dev Notes">
+      Storage bucket named 'videos' for encrypted video files. Permissions: Authenticated users can upload/read their own videos. File size limit: Configure based on expected video sizes (50-500 MB typical, up to 1 GB max). Note: Encryption happens client-side before upload (Epic 2).
+    </constraint>
+    <constraint category="database" source="story Dev Notes">
+      Database schema will be created in Epic 6 (Story 6.1). For this story: Just verify database connection works with simple test query. Tables to be created later: stations, videos, work_elements, categorization_segments.
+    </constraint>
+  </constraints>
+
+  <interfaces>
+    <interface name="Supabase Browser Client" kind="client-library" path="lib/supabase/client.ts">
+      <purpose>Browser-side Supabase client for client components and browser-only operations</purpose>
+      <signature>
+        import { createBrowserClient } from '@supabase/ssr';
+        import env from '../env';
+
+        export const supabase = createBrowserClient(
+          env.NEXT_PUBLIC_SUPABASE_URL,
+          env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+        );
+      </signature>
+      <usage>Import in client components, hooks, and browser-side logic</usage>
+    </interface>
+    <interface name="Supabase Server Client" kind="function-signature" path="lib/supabase/server.ts">
+      <purpose>Server-side Supabase client factory for server components and API routes with cookie handling</purpose>
+      <signature>
+        import { createServerClient } from '@supabase/ssr';
+        import { cookies } from 'next/headers';
+        import env from '../env';
+
+        export function createClient() {
+          const cookieStore = cookies();
+          return createServerClient(
+            env.NEXT_PUBLIC_SUPABASE_URL,
+            env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+            {
+              cookies: {
+                getAll() { return cookieStore.getAll(); },
+                setAll(cookiesToSet) {
+                  cookiesToSet.forEach(({ name, value, options }) => {
+                    cookieStore.set(name, value, options);
+                  });
+                },
+              },
+            }
+          );
+        }
+      </signature>
+      <usage>Call createClient() in server components, server actions, and API routes for cookie-based auth</usage>
+    </interface>
+    <interface name="Environment Validation" kind="module" path="lib/env.ts">
+      <purpose>Type-safe environment variable validation using Zod schema</purpose>
+      <signature>
+        import { z } from 'zod';
+
+        const envSchema = z.object({
+          NEXT_PUBLIC_SUPABASE_URL: z.string().url(),
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string().min(1),
+        });
+
+        const env = envSchema.parse({
+          NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+        });
+
+        export default env;
+      </signature>
+      <usage>Import env object anywhere to access validated, type-safe environment variables</usage>
+    </interface>
+    <interface name="Environment Template" kind="file-template" path=".env.local.example">
+      <purpose>Example environment file documenting required variables for local development</purpose>
+      <template>
+        # Supabase Configuration
+        # Get these values from: https://supabase.com/dashboard/project/YOUR_PROJECT/settings/api
+
+        # Supabase project URL
+        NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+
+        # Supabase anonymous (public) key - safe to expose to browser
+        NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key-here
+      </template>
+      <usage>Copy to .env.local and fill in actual Supabase credentials</usage>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Playwright is configured for E2E testing (from Story 1.1). Connection verification testing for this story should use temporary test pages/routes to verify Supabase clients work correctly. Manual testing: Run npm run dev and verify no environment validation errors. Check browser console for Supabase connection errors. Test database query: await supabase.from('_supabase_migrations').select('version').limit(1). Test storage bucket access: await supabase.storage.listBuckets(). Remove test code after verification.
+    </standards>
+    <locations>
+      tests/e2e/ - Playwright E2E tests (configured in Story 1.1)
+      tests/unit/ - Vitest unit tests (to be configured in future stories)
+      Temporary test location: app/api/test-supabase/route.ts or similar (for connection verification during this story, removed after)
+    </locations>
+    <ideas>
+      <idea ac="AC1" priority="P0">
+        <test>Environment Validation Test</test>
+        <description>Verify env.ts successfully validates environment variables with Zod. Test missing NEXT_PUBLIC_SUPABASE_URL throws validation error. Test invalid URL format throws validation error. Test missing NEXT_PUBLIC_SUPABASE_ANON_KEY throws validation error. Verify validated env object has correct TypeScript types.</description>
+      </idea>
+      <idea ac="AC1,AC4" priority="P0">
+        <test>Browser Client Connection Test</test>
+        <description>Create temporary test page that imports lib/supabase/client.ts. Test client initializes without errors. Test simple database query (e.g., _supabase_migrations table). Verify connection succeeds with valid credentials. Remove test page after verification.</description>
+      </idea>
+      <idea ac="AC1,AC4" priority="P0">
+        <test>Server Client Connection Test</test>
+        <description>Create temporary API route (app/api/test-supabase/route.ts) that uses createClient() from lib/supabase/server.ts. Test client initializes without errors. Test database query from server context. Verify cookies are properly configured. Remove API route after verification.</description>
+      </idea>
+      <idea ac="AC1" priority="P1">
+        <test>Storage Bucket Access Test</test>
+        <description>Test supabase.storage.listBuckets() returns buckets including 'videos'. Verify 'videos' bucket exists and has correct permissions configured. Test bucket accessibility from both browser and server clients.</description>
+      </idea>
+      <idea ac="AC2,AC3" priority="P1">
+        <test>Environment Security Test</test>
+        <description>Verify .env.local is listed in .gitignore (line 34: .env*). Confirm git status does not show .env.local as tracked. Verify .env.local.example is tracked and documents all required variables. Check NEXT_PUBLIC_SUPABASE_ANON_KEY is not committed anywhere in repository history.</description>
+      </idea>
+      <idea ac="AC1" priority="P2">
+        <test>Package Installation Verification</test>
+        <description>Verify package.json lists @supabase/supabase-js, @supabase/ssr, and zod in dependencies. Test npm install completes successfully with no peer dependency warnings. Verify TypeScript types are available for all three packages.</description>
+      </idea>
+    </ideas>
+  </tests>
+</story-context>

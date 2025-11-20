@@ -1,0 +1,192 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>1</epicId>
+    <storyId>1</storyId>
+    <title>Project Setup & Repository Structure</title>
+    <status>drafted</status>
+    <generatedAt>2025-11-20</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/1-1-project-setup.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>developer</asA>
+    <iWant>a properly structured Next.js project with all core dependencies configured</iWant>
+    <soThat>I have a solid foundation for building the Yamazumi application</soThat>
+    <tasks>
+- Initialize Next.js 15 project with TypeScript (AC: Project structure)
+  - Run `npx create-next-app@latest yamazumi --typescript --tailwind --app --eslint`
+  - Verify Next.js 15 with App Router is configured
+  - Verify TypeScript is enabled with proper tsconfig.json
+  - Verify ESLint is configured with default rules
+  - Verify Tailwind CSS is configured
+
+- Create basic folder structure (AC: Basic folder structure)
+  - Create `components/` directory for React components
+  - Create `lib/` directory for utility libraries
+  - Create `types/` directory for TypeScript type definitions
+  - Create `store/` directory for Zustand state management (planned)
+  - Create `hooks/` directory for custom React hooks (planned)
+  - Verify `app/` directory exists (App Router)
+
+- Set up code quality tools (AC: ESLint and Prettier)
+  - Install Prettier: `npm install -D prettier`
+  - Create `.prettierrc` config file
+  - Create `.prettierignore` file
+  - Add format script to package.json: `"format": "prettier --write ."`
+  - Verify ESLint and Prettier work together (no conflicts)
+
+- Create project documentation (AC: README with setup instructions)
+  - Update README.md with project overview
+  - Document setup commands (`npm install`, `npm run dev`)
+  - Document folder structure and conventions
+  - Document available npm scripts
+  - Add link to architecture.md and PRD.md
+
+- Verify project functionality (AC: All acceptance criteria)
+  - Run `npm run dev` and verify server starts on port 3000
+  - Run `npm run build` and verify TypeScript compiles without errors
+  - Run `npm run lint` and verify linting passes
+  - Access http://localhost:3000 and verify default Next.js page renders
+  - Verify hot reload works when editing files
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+**Given** I am starting a new project
+**When** I initialize the Next.js 15 project with TypeScript
+**Then** The project structure includes:
+- Next.js 15 with App Router configured
+- TypeScript configuration
+- ESLint and Prettier setup
+- Basic folder structure (app/, components/, lib/, types/)
+- Package.json with core dependencies listed
+- README with setup instructions
+
+**And** The project can be started with `npm run dev`
+**And** TypeScript compilation succeeds without errors
+**And** Linting passes with default configuration
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/architecture.md</path>
+        <title>Architecture - Project Initialization</title>
+        <section>Project Initialization</section>
+        <snippet>Command: `npx create-next-app@latest yamazumi --typescript --tailwind --app --eslint`. Establishes Next.js 15 with App Router, TypeScript, Tailwind CSS, and ESLint configured.</snippet>
+      </doc>
+      <doc>
+        <path>docs/architecture.md</path>
+        <title>Architecture - Project Structure</title>
+        <section>Project Structure</section>
+        <snippet>Complete folder structure defined: app/ (Next.js App Router), components/ (React components by feature), lib/ (utilities), types/ (TypeScript), store/ (Zustand), hooks/, tests/ (unit and e2e). Material UI + Tailwind CSS hybrid approach.</snippet>
+      </doc>
+      <doc>
+        <path>docs/architecture.md</path>
+        <title>Architecture - Naming Conventions</title>
+        <section>Implementation Patterns - Naming Conventions</section>
+        <snippet>Files: Components PascalCase.tsx, Utilities camelCase.ts, Hooks use prefix. Code: Components PascalCase, Functions camelCase, Variables camelCase, Constants UPPER_SNAKE_CASE.</snippet>
+      </doc>
+      <doc>
+        <path>docs/architecture.md</path>
+        <title>Architecture - Technology Stack</title>
+        <section>Technology Stack Details</section>
+        <snippet>Next.js 15 (App Router), TypeScript, Material UI (MUI) + Tailwind CSS, Vitest (unit testing), Playwright (E2E testing), Zod (env validation).</snippet>
+      </doc>
+      <doc>
+        <path>docs/ux-design-specification.md</path>
+        <title>UX Design - Design System Foundation</title>
+        <section>1. Design System Foundation</section>
+        <snippet>Material UI (MUI) as primary component library. Professional Blue theme (#2563eb primary, #64748b secondary). System font stack, 12-column grid, spacing based on 4px unit.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <artifact>
+        <path>README.md</path>
+        <kind>documentation</kind>
+        <symbol>N/A</symbol>
+        <lines>N/A</lines>
+        <reason>Existing project README - will be updated with setup instructions and project overview per acceptance criteria</reason>
+      </artifact>
+    </code>
+    <dependencies>
+      <node>
+        <package>next</package>
+        <version>^15.x</version>
+        <type>dependency</type>
+        <purpose>Next.js framework with App Router</purpose>
+      </node>
+      <node>
+        <package>react</package>
+        <version>^19.x</version>
+        <type>dependency</type>
+        <purpose>React library</purpose>
+      </node>
+      <node>
+        <package>react-dom</package>
+        <version>^19.x</version>
+        <type>dependency</type>
+        <purpose>React DOM rendering</purpose>
+      </node>
+      <node>
+        <package>typescript</package>
+        <version>^5.x</version>
+        <type>devDependency</type>
+        <purpose>TypeScript compiler and type checking</purpose>
+      </node>
+      <node>
+        <package>tailwindcss</package>
+        <version>^3.x</version>
+        <type>devDependency</type>
+        <purpose>Utility-first CSS framework</purpose>
+      </node>
+      <node>
+        <package>eslint</package>
+        <version>^9.x</version>
+        <type>devDependency</type>
+        <purpose>Code linting and quality checks</purpose>
+      </node>
+      <node>
+        <package>eslint-config-next</package>
+        <version>^15.x</version>
+        <type>devDependency</type>
+        <purpose>Next.js ESLint configuration</purpose>
+      </node>
+      <node>
+        <package>prettier</package>
+        <version>latest</version>
+        <type>devDependency</type>
+        <purpose>Code formatting (to be installed in this story)</purpose>
+      </node>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint>Must use Next.js 15 with App Router (ADR-001) - no Pages Router</constraint>
+    <constraint>TypeScript must be enabled - no JavaScript files in src</constraint>
+    <constraint>Use Material UI (MUI) + Tailwind CSS hybrid styling approach (ADR-002)</constraint>
+    <constraint>Follow naming conventions: PascalCase for components, camelCase for functions/variables, UPPER_SNAKE_CASE for constants</constraint>
+    <constraint>ESLint and Prettier must be configured and passing before story completion</constraint>
+    <constraint>Project structure must match architecture.md specification (app/, components/, lib/, types/, store/, hooks/, tests/)</constraint>
+    <constraint>Testing directories must be created (tests/unit/, tests/e2e/) even though test configuration happens in future stories</constraint>
+    <constraint>Prettier config: single quotes, 2-space indentation, semicolons, trailing commas, 100 char max line width</constraint>
+  </constraints>
+  <interfaces>
+    <!-- No interfaces for Story 1.1 - this is the first story establishing the project foundation -->
+  </interfaces>
+  <tests>
+    <standards>Testing frameworks per architecture.md: Vitest for unit tests (faster, better ESM support), Playwright for E2E tests (essential for video/Crypto). Test configuration will be added in future stories. For Story 1.1, create test directories (tests/unit/, tests/e2e/) but test setup happens later.</standards>
+    <locations>
+      <location>tests/unit/</location>
+      <location>tests/e2e/</location>
+    </locations>
+    <ideas>
+      <idea ac="AC1">Manual verification: Project starts with `npm run dev` on port 3000</idea>
+      <idea ac="AC2">Manual verification: `npm run build` succeeds with TypeScript compilation</idea>
+      <idea ac="AC3">Manual verification: `npm run lint` passes with default ESLint configuration</idea>
+      <idea ac="AC4">Manual verification: Hot reload works when editing files</idea>
+      <idea>Note: Automated test configuration (Vitest, Playwright) will be added in future Epic 1 stories</idea>
+    </ideas>
+  </tests>
+</story-context>

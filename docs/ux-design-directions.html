@@ -1,0 +1,2037 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yamazumi - Design Direction Mockups</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+            background: #f5f5f5;
+            color: #1a1a1a;
+            line-height: 1.6;
+        }
+
+        .header {
+            background: white;
+            padding: 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 1rem;
+        }
+
+        .nav-controls {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            padding: 0.75rem 1.5rem;
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .nav-btn:hover {
+            background: #1e40af;
+            transform: translateY(-1px);
+        }
+
+        .nav-btn:disabled {
+            background: #cbd5e1;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .direction-counter {
+            padding: 0.75rem 1.5rem;
+            background: #f1f5f9;
+            border-radius: 6px;
+            font-weight: 600;
+            color: #475569;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .direction-section {
+            display: none;
+        }
+
+        .direction-section.active {
+            display: block;
+        }
+
+        .direction-header {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .direction-name {
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #1e293b;
+        }
+
+        .direction-personality {
+            font-size: 1.1rem;
+            color: #64748b;
+            font-style: italic;
+            margin-bottom: 1rem;
+        }
+
+        .direction-description {
+            color: #475569;
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+        }
+
+        .characteristics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .characteristic {
+            padding: 1rem;
+            background: #f8fafc;
+            border-radius: 8px;
+            border-left: 3px solid #2563eb;
+        }
+
+        .characteristic-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: #64748b;
+            margin-bottom: 0.25rem;
+        }
+
+        .characteristic-value {
+            font-size: 1rem;
+            color: #1e293b;
+            font-weight: 500;
+        }
+
+        .mockup-container {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+
+        .mockup-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: #1e293b;
+        }
+
+        /* Mockup Styles */
+        .mockup {
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            overflow: hidden;
+            background: white;
+        }
+
+        .mockup-nav {
+            background: #1e293b;
+            color: white;
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .mockup-nav-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .mockup-nav-items {
+            display: flex;
+            gap: 2rem;
+            font-size: 0.9rem;
+        }
+
+        .mockup-nav-item {
+            cursor: pointer;
+            opacity: 0.8;
+            transition: opacity 0.2s;
+        }
+
+        .mockup-nav-item:hover,
+        .mockup-nav-item.active {
+            opacity: 1;
+            font-weight: 500;
+        }
+
+        .mockup-content {
+            padding: 2rem;
+        }
+
+        /* Direction 1: Spacious Explorer */
+        .dir1 {
+            --primary: #2563eb;
+            --bg: #ffffff;
+            --surface: #f8fafc;
+            --border: #e2e8f0;
+            --text: #1e293b;
+            --text-secondary: #64748b;
+        }
+
+        .dir1 .mockup-content {
+            padding: 3rem;
+        }
+
+        .dir1 .video-section {
+            background: #000;
+            border-radius: 8px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            min-height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .dir1 .timeline {
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .dir1 .timeline-bar {
+            height: 40px;
+            background: linear-gradient(to right, #10b981 0%, #10b981 30%, #f59e0b 30%, #f59e0b 60%, #ef4444 60%, #ef4444 100%);
+            border-radius: 4px;
+            margin-bottom: 1rem;
+            position: relative;
+        }
+
+        .dir1 .breakpoint {
+            position: absolute;
+            top: -8px;
+            width: 4px;
+            height: 56px;
+            background: #2563eb;
+            border-radius: 2px;
+        }
+
+        .dir1 .breakpoint:nth-child(1) { left: 30%; }
+        .dir1 .breakpoint:nth-child(2) { left: 60%; }
+
+        .dir1 .work-elements {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            max-height: 500px;
+            overflow-y: auto;
+            padding-right: 0.5rem;
+        }
+
+        .dir1 .work-elements::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .dir1 .work-elements::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 4px;
+        }
+
+        .dir1 .work-elements::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        .dir1 .work-elements::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        .dir1 .element-card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 1.5rem;
+        }
+
+        .dir1 .element-name {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #1e293b;
+        }
+
+        .dir1 .element-time {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #2563eb;
+            margin-bottom: 0.5rem;
+        }
+
+        .dir1 .element-breakdown {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.75rem;
+        }
+
+        .dir1 .breakdown-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .dir1 .badge-green { background: #10b981; color: white; }
+        .dir1 .badge-yellow { background: #f59e0b; color: white; }
+        .dir1 .badge-red { background: #ef4444; color: white; }
+
+        /* Direction 2: Dense Dashboard */
+        .dir2 {
+            --primary: #2563eb;
+            --bg: #ffffff;
+            --surface: #f8fafc;
+            --border: #e2e8f0;
+            --text: #1e293b;
+            --text-secondary: #64748b;
+        }
+
+        .dir2 .mockup-content {
+            padding: 1.5rem;
+        }
+
+        .dir2 .layout-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .dir2 .video-section {
+            background: #000;
+            border-radius: 6px;
+            padding: 1.5rem;
+            min-height: 380px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            margin-bottom: 1rem;
+        }
+
+        .dir2 .timeline {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .dir2 .timeline-bar {
+            height: 32px;
+            background: linear-gradient(to right, #10b981 0%, #10b981 30%, #f59e0b 30%, #f59e0b 60%, #ef4444 60%, #ef4444 100%);
+            border-radius: 4px;
+            position: relative;
+        }
+
+        .dir2 .breakpoint {
+            position: absolute;
+            top: -6px;
+            width: 3px;
+            height: 44px;
+            background: #2563eb;
+            border-radius: 2px;
+        }
+
+        .dir2 .breakpoint:nth-child(1) { left: 30%; }
+        .dir2 .breakpoint:nth-child(2) { left: 60%; }
+
+        .dir2 .sidebar {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            padding: 1rem;
+            max-height: 730px;
+            overflow-y: auto;
+        }
+
+        .dir2 .sidebar::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .dir2 .sidebar::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 4px;
+        }
+
+        .dir2 .sidebar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        .dir2 .element-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .dir2 .element-item {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            padding: 1rem;
+        }
+
+        .dir2 .element-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .dir2 .element-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .dir2 .element-time {
+            font-weight: 700;
+            color: #2563eb;
+            font-size: 1.1rem;
+        }
+
+        .dir2 .element-breakdown {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .dir2 .breakdown-badge {
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        /* Direction 3: Card Gallery */
+        .dir3 {
+            --primary: #2563eb;
+            --bg: #ffffff;
+            --surface: #f8fafc;
+            --border: #e2e8f0;
+            --text: #1e293b;
+            --text-secondary: #64748b;
+        }
+
+        .dir3 .mockup-content {
+            padding: 2rem;
+        }
+
+        .dir3 .video-card {
+            background: #000;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            min-height: 280px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .dir3 .timeline-card {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .dir3 .timeline-bar {
+            height: 48px;
+            background: linear-gradient(to right, #10b981 0%, #10b981 30%, #f59e0b 30%, #f59e0b 60%, #ef4444 60%, #ef4444 100%);
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            position: relative;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .dir3 .breakpoint {
+            position: absolute;
+            top: -10px;
+            width: 5px;
+            height: 68px;
+            background: #2563eb;
+            border-radius: 3px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .dir3 .breakpoint:nth-child(1) { left: 30%; }
+        .dir3 .breakpoint:nth-child(2) { left: 60%; }
+
+        .dir3 .work-elements {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            max-height: 500px;
+            overflow-y: auto;
+            padding-right: 0.5rem;
+        }
+
+        .dir3 .work-elements::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .dir3 .work-elements::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 4px;
+        }
+
+        .dir3 .work-elements::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        .dir3 .element-card {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .dir3 .element-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+            border-color: #2563eb;
+        }
+
+        .dir3 .element-name {
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: #1e293b;
+            font-size: 1.1rem;
+        }
+
+        .dir3 .element-time {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #2563eb;
+            margin-bottom: 1rem;
+        }
+
+        .dir3 .element-breakdown {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+
+        /* Direction 4: Minimal Focus */
+        .dir4 {
+            --primary: #2563eb;
+            --bg: #ffffff;
+            --surface: #ffffff;
+            --border: #e2e8f0;
+            --text: #1e293b;
+            --text-secondary: #64748b;
+        }
+
+        .dir4 .mockup-content {
+            padding: 3rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .dir4 .video-section {
+            background: #000;
+            border-radius: 4px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            min-height: 320px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .dir4 .timeline {
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid #e2e8f0;
+            border-radius: 0;
+            padding: 1.5rem 0;
+            margin-bottom: 2rem;
+        }
+
+        .dir4 .timeline-bar {
+            height: 36px;
+            background: linear-gradient(to right, #10b981 0%, #10b981 30%, #f59e0b 30%, #f59e0b 60%, #ef4444 60%, #ef4444 100%);
+            border-radius: 2px;
+            position: relative;
+        }
+
+        .dir4 .breakpoint {
+            position: absolute;
+            top: -8px;
+            width: 3px;
+            height: 52px;
+            background: #2563eb;
+            border-radius: 2px;
+        }
+
+        .dir4 .breakpoint:nth-child(1) { left: 30%; }
+        .dir4 .breakpoint:nth-child(2) { left: 60%; }
+
+        .dir4 .work-elements {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            max-height: 500px;
+            overflow-y: auto;
+            padding-right: 0.5rem;
+        }
+
+        .dir4 .work-elements::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .dir4 .work-elements::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 4px;
+        }
+
+        .dir4 .work-elements::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        .dir4 .element-card {
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid #e2e8f0;
+            border-radius: 0;
+            padding: 1.5rem 0;
+        }
+
+        .dir4 .element-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 0.75rem;
+        }
+
+        .dir4 .element-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: #1e293b;
+        }
+
+        .dir4 .element-time {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #2563eb;
+        }
+
+        .dir4 .element-breakdown {
+            display: flex;
+            gap: 1rem;
+        }
+
+        /* Direction 5: Top Navigation */
+        .dir5 {
+            --primary: #2563eb;
+            --bg: #ffffff;
+            --surface: #f8fafc;
+            --border: #e2e8f0;
+            --text: #1e293b;
+            --text-secondary: #64748b;
+        }
+
+        .dir5 .mockup-nav {
+            background: white;
+            border-bottom: 2px solid #e2e8f0;
+            color: #1e293b;
+        }
+
+        .dir5 .mockup-nav-title {
+            color: #2563eb;
+        }
+
+        .dir5 .mockup-nav-items {
+            color: #64748b;
+        }
+
+        .dir5 .mockup-content {
+            padding: 2rem;
+        }
+
+        .dir5 .video-section {
+            background: #000;
+            border-radius: 8px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            min-height: 280px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .dir5 .timeline {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .dir5 .timeline-bar {
+            height: 40px;
+            background: linear-gradient(to right, #10b981 0%, #10b981 30%, #f59e0b 30%, #f59e0b 60%, #ef4444 60%, #ef4444 100%);
+            border-radius: 4px;
+            position: relative;
+        }
+
+        .dir5 .breakpoint {
+            position: absolute;
+            top: -8px;
+            width: 4px;
+            height: 56px;
+            background: #2563eb;
+            border-radius: 2px;
+        }
+
+        .dir5 .breakpoint:nth-child(1) { left: 30%; }
+        .dir5 .breakpoint:nth-child(2) { left: 60%; }
+
+        .dir5 .work-elements {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            max-height: 500px;
+            overflow-y: auto;
+            padding-right: 0.5rem;
+        }
+
+        .dir5 .work-elements::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .dir5 .work-elements::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 4px;
+        }
+
+        .dir5 .work-elements::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        .dir5 .element-card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 1.25rem;
+        }
+
+        /* Direction 6: Sidebar Navigation */
+        .dir6 {
+            --primary: #2563eb;
+            --bg: #ffffff;
+            --surface: #f8fafc;
+            --border: #e2e8f0;
+            --text: #1e293b;
+            --text-secondary: #64748b;
+        }
+
+        .dir6 .mockup-content {
+            display: grid;
+            grid-template-columns: 240px 1fr;
+            gap: 2rem;
+            padding: 2rem;
+        }
+
+        .dir6 .sidebar-nav {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 1.5rem;
+            height: fit-content;
+        }
+
+        .dir6 .nav-item {
+            padding: 0.75rem 1rem;
+            border-radius: 6px;
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+            color: #64748b;
+            transition: all 0.2s;
+        }
+
+        .dir6 .nav-item:hover,
+        .dir6 .nav-item.active {
+            background: #2563eb;
+            color: white;
+        }
+
+        .dir6 .main-content {
+            background: white;
+        }
+
+        .dir6 .video-section {
+            background: #000;
+            border-radius: 8px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            min-height: 280px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .dir6 .timeline {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .dir6 .timeline-bar {
+            height: 40px;
+            background: linear-gradient(to right, #10b981 0%, #10b981 30%, #f59e0b 30%, #f59e0b 60%, #ef4444 60%, #ef4444 100%);
+            border-radius: 4px;
+            position: relative;
+        }
+
+        .dir6 .breakpoint {
+            position: absolute;
+            top: -8px;
+            width: 4px;
+            height: 56px;
+            background: #2563eb;
+            border-radius: 2px;
+        }
+
+        .dir6 .breakpoint:nth-child(1) { left: 30%; }
+        .dir6 .breakpoint:nth-child(2) { left: 60%; }
+
+        .dir6 .work-elements {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            max-height: 500px;
+            overflow-y: auto;
+            padding-right: 0.5rem;
+        }
+
+        .dir6 .work-elements::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .dir6 .work-elements::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 4px;
+        }
+
+        .dir6 .work-elements::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        .scroll-indicator {
+            text-align: center;
+            padding: 0.5rem;
+            color: #64748b;
+            font-size: 0.85rem;
+            font-style: italic;
+            margin-top: 0.5rem;
+        }
+
+        .dir6 .element-card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 1.25rem;
+        }
+
+        /* Common element styles */
+        .element-name {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #1e293b;
+        }
+
+        .element-time {
+            font-weight: 700;
+            color: #2563eb;
+            margin-bottom: 0.5rem;
+        }
+
+        .element-breakdown {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .breakdown-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .badge-green { background: #10b981; color: white; }
+        .badge-yellow { background: #f59e0b; color: white; }
+        .badge-red { background: #ef4444; color: white; }
+
+        .thumbnail-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .thumbnail {
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: white;
+        }
+
+        .thumbnail:hover {
+            border-color: #2563eb;
+            transform: translateY(-2px);
+        }
+
+        .thumbnail.active {
+            border-color: #2563eb;
+            background: #eff6ff;
+        }
+
+        .thumbnail-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .thumbnail-desc {
+            font-size: 0.8rem;
+            color: #64748b;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <h1>🎨 Yamazumi Design Direction Mockups</h1>
+            <p class="subtitle">Explore 6 different design approaches for your video analysis interface. Each mockup shows 12 work elements to demonstrate how designs handle realistic job complexity.</p>
+            <div class="nav-controls">
+                <button class="nav-btn" id="prevBtn" onclick="changeDirection(-1)">← Previous</button>
+                <div class="direction-counter">
+                    <span id="currentDir">1</span> / <span id="totalDirs">6</span>
+                </div>
+                <button class="nav-btn" id="nextBtn" onclick="changeDirection(1)">Next →</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Direction 1: Spacious Explorer -->
+        <div class="direction-section active dir1" id="dir1">
+            <div class="direction-header">
+                <div class="direction-name">Direction 1: Spacious Explorer</div>
+                <div class="direction-personality">Friendly & Approachable • Breathing Room • Clear Focus</div>
+                <div class="direction-description">
+                    This design emphasizes spaciousness and clarity. Large video player, generous padding, and clear visual hierarchy make it easy to focus on the analysis. Perfect for users who want to see everything at once without feeling overwhelmed.
+                </div>
+                <div class="characteristics">
+                    <div class="characteristic">
+                        <div class="characteristic-label">Layout</div>
+                        <div class="characteristic-value">Single Column</div>
+                    </div>
+                    <div class="characteristic">
+                        <div class="characteristic-label">Density</div>
+                        <div class="characteristic-value">Spacious</div>
+                    </div>
+                    <div class="characteristic">
+                        <div class="characteristic-label">Navigation</div>
+                        <div class="characteristic-value">Top Nav</div>
+                    </div>
+                    <div class="characteristic">
+                        <div class="characteristic-label">Visual Weight</div>
+                        <div class="characteristic-value">Balanced</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mockup-container">
+                <div class="mockup-title">Video Analysis Screen</div>
+                <div class="mockup">
+                    <div class="mockup-nav">
+                        <div class="mockup-nav-title">Yamazumi</div>
+                        <div class="mockup-nav-items">
+                            <span class="mockup-nav-item active">Analysis</span>
+                            <span class="mockup-nav-item">Charts</span>
+                            <span class="mockup-nav-item">Settings</span>
+                        </div>
+                    </div>
+                    <div class="mockup-content">
+                        <div class="video-section">
+                            <div>Video Player (Large, Centered)</div>
+                        </div>
+                        <div class="timeline">
+                            <div class="timeline-bar">
+                                <div class="breakpoint"></div>
+                                <div class="breakpoint"></div>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-top: 0.5rem; font-size: 0.85rem; color: #64748b;">
+                                <span>0:00</span>
+                                <span>0:15</span>
+                                <span>0:30</span>
+                                <span>0:45</span>
+                            </div>
+                        </div>
+                        <div class="work-elements">
+                            <div class="element-card">
+                                <div class="element-name">Pick Part</div>
+                                <div class="element-time">12.5s</div>
+                                <div class="element-breakdown">
+                                    <span class="breakdown-badge badge-green">VA: 8s</span>
+                                    <span class="breakdown-badge badge-yellow">NVA: 4.5s</span>
+                                </div>
+                            </div>
+                            <div class="element-card">
+                                <div class="element-name">Position Part</div>
+                                <div class="element-time">8.3s</div>
+                                <div class="element-breakdown">
+                                    <span class="breakdown-badge badge-green">VA: 6s</span>
+                                    <span class="breakdown-badge badge-yellow">NVA: 2.3s</span>
+                                </div>
+                            </div>
+                            <div class="element-card">
+                                <div class="element-name">Install Bolt</div>
+                                <div class="element-time">18.2s</div>
+                                <div class="element-breakdown">
+                                    <span class="breakdown-badge badge-green">VA: 15s</span>
+                                    <span class="breakdown-badge badge-red">Waste: 3.2s</span>
+                                </div>
+                            </div>
+                            <div class="element-card">
+                                <div class="element-name">Tighten Bolt</div>
+                                <div class="element-time">14.7s</div>
+                                <div class="element-breakdown">
+                                    <span class="breakdown-badge badge-green">VA: 12s</span>
+                                    <span class="breakdown-badge badge-yellow">NVA: 2.7s</span>
+                                </div>
+                            </div>
+                            <div class="element-card">
+                                <div class="element-name">Pick Next Part</div>
+                                <div class="element-time">11.2s</div>
+                                <div class="element-breakdown">
+                                    <span class="breakdown-badge badge-yellow">NVA: 8s</span>
+                                    <span class="breakdown-badge badge-red">Waste: 3.2s</span>
+                                </div>
+                            </div>
+                            <div class="element-card">
+                                <div class="element-name">Inspect Assembly</div>
+                                <div class="element-time">9.8s</div>
+                                <div class="element-breakdown">
+                                    <span class="breakdown-badge badge-green">VA: 7s</span>
+                                    <span class="breakdown-badge badge-yellow">NVA: 2.8s</span>
+                                </div>
+                            </div>
+                            <div class="element-card">
+                                <div class="element-name">Apply Sealant</div>
+                                <div class="element-time">16.4s</div>
+                                <div class="element-breakdown">
+                                    <span class="breakdown-badge badge-green">VA: 14s</span>
+                                    <span class="breakdown-badge badge-red">Waste: 2.4s</span>
+                                </div>
+                            </div>
+                            <div class="element-card">
+                                <div class="element-name">Return Tool</div>
+                                <div class="element-time">14.5s</div>
+                                <div class="element-breakdown">
+                                    <span class="breakdown-badge badge-yellow">NVA: 10s</span>
+                                    <span class="breakdown-badge badge-red">Waste: 4.5s</span>
+                                </div>
+                            </div>
+                            <div class="element-card">
+                                <div class="element-name">Move to Next Station</div>
+                                <div class="element-time">22.1s</div>
+                                <div class="element-breakdown">
+                                    <span class="breakdown-badge badge-red">Waste: 22.1s</span>
+                                </div>
+                            </div>
+                            <div class="element-card">
+                                <div class="element-name">Pick Component</div>
+                                <div class="element-time">10.6s</div>
+                                <div class="element-breakdown">
+                                    <span class="breakdown-badge badge-green">VA: 7s</span>
+                                    <span class="breakdown-badge badge-yellow">NVA: 3.6s</span>
+                                </div>
+                            </div>
+                            <div class="element-card">
+                                <div class="element-name">Attach Component</div>
+                                <div class="element-time">19.3s</div>
+                                <div class="element-breakdown">
+                                    <span class="breakdown-badge badge-green">VA: 16s</span>
+                                    <span class="breakdown-badge badge-yellow">NVA: 3.3s</span>
+                                </div>
+                            </div>
+                            <div class="element-card">
+                                <div class="element-name">Final Inspection</div>
+                                <div class="element-time">7.9s</div>
+                                <div class="element-breakdown">
+                                    <span class="breakdown-badge badge-green">VA: 6s</span>
+                                    <span class="breakdown-badge badge-yellow">NVA: 1.9s</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="scroll-indicator">Scroll to see all 12 work elements (Total cycle time: 165.9s)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Direction 2: Dense Dashboard -->
+        <div class="direction-section dir2" id="dir2">
+            <div class="direction-header">
+                <div class="direction-name">Direction 2: Dense Dashboard</div>
+                <div class="direction-personality">Professional & Efficient • Information-Rich • Power User</div>
+                <div class="direction-description">
+                    Maximizes information density while maintaining clarity. Two-column layout shows video and work elements side-by-side. Perfect for users who need to see all data at once and work quickly through multiple analyses.
+                </div>
+                <div class="characteristics">
+                    <div class="characteristic">
+                        <div class="characteristic-label">Layout</div>
+                        <div class="characteristic-value">Two Column</div>
+                    </div>
+                    <div class="characteristic">
+                        <div class="characteristic-label">Density</div>
+                        <div class="characteristic-value">Dense</div>
+                    </div>
+                    <div class="characteristic">
+                        <div class="characteristic-label">Navigation</div>
+                        <div class="characteristic-value">Top Nav</div>
+                    </div>
+                    <div class="characteristic">
+                        <div class="characteristic-label">Visual Weight</div>
+                        <div class="characteristic-value">Information-Rich</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mockup-container">
+                <div class="mockup-title">Video Analysis Screen</div>
+                <div class="mockup">
+                    <div class="mockup-nav">
+                        <div class="mockup-nav-title">Yamazumi</div>
+                        <div class="mockup-nav-items">
+                            <span class="mockup-nav-item active">Analysis</span>
+                            <span class="mockup-nav-item">Charts</span>
+                            <span class="mockup-nav-item">Settings</span>
+                        </div>
+                    </div>
+                    <div class="mockup-content">
+                        <div class="layout-grid">
+                            <div>
+                                <div class="video-section">
+                                    <div>Video Player</div>
+                                </div>
+                                <div class="timeline">
+                                    <div class="timeline-bar">
+                                        <div class="breakpoint"></div>
+                                        <div class="breakpoint"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="sidebar">
+                                <div class="element-list">
+                                    <div class="element-item">
+                                        <div class="element-header">
+                                            <div class="element-name">Pick Part</div>
+                                            <div class="element-time">12.5s</div>
+                                        </div>
+                                        <div class="element-breakdown">
+                                            <span class="breakdown-badge badge-green">VA: 8s</span>
+                                            <span class="breakdown-badge badge-yellow">NVA: 4.5s</span>
+                                        </div>
+                                    </div>
+                                    <div class="element-item">
+                                        <div class="element-header">
+                                            <div class="element-name">Position Part</div>
+                                            <div class="element-time">8.3s</div>
+                                        </div>
+                                        <div class="element-breakdown">
+                                            <span class="breakdown-badge badge-green">VA: 6s</span>
+                                            <span class="breakdown-badge badge-yellow">NVA: 2.3s</span>
+                                        </div>
+                                    </div>
+                                    <div class="element-item">
+                                        <div class="element-header">
+                                            <div class="element-name">Install Bolt</div>
+                                            <div class="element-time">18.2s</div>
+                                        </div>
+                                        <div class="element-breakdown">
+                                            <span class="breakdown-badge badge-green">VA: 15s</span>
+                                            <span class="breakdown-badge badge-red">Waste: 3.2s</span>
+                                        </div>
+                                    </div>
+                                    <div class="element-item">
+                                        <div class="element-header">
+                                            <div class="element-name">Tighten Bolt</div>
+                                            <div class="element-time">14.7s</div>
+                                        </div>
+                                        <div class="element-breakdown">
+                                            <span class="breakdown-badge badge-green">VA: 12s</span>
+                                            <span class="breakdown-badge badge-yellow">NVA: 2.7s</span>
+                                        </div>
+                                    </div>
+                                    <div class="element-item">
+                                        <div class="element-header">
+                                            <div class="element-name">Pick Next Part</div>
+                                            <div class="element-time">11.2s</div>
+                                        </div>
+                                        <div class="element-breakdown">
+                                            <span class="breakdown-badge badge-yellow">NVA: 8s</span>
+                                            <span class="breakdown-badge badge-red">Waste: 3.2s</span>
+                                        </div>
+                                    </div>
+                                    <div class="element-item">
+                                        <div class="element-header">
+                                            <div class="element-name">Inspect Assembly</div>
+                                            <div class="element-time">9.8s</div>
+                                        </div>
+                                        <div class="element-breakdown">
+                                            <span class="breakdown-badge badge-green">VA: 7s</span>
+                                            <span class="breakdown-badge badge-yellow">NVA: 2.8s</span>
+                                        </div>
+                                    </div>
+                                    <div class="element-item">
+                                        <div class="element-header">
+                                            <div class="element-name">Apply Sealant</div>
+                                            <div class="element-time">16.4s</div>
+                                        </div>
+                                        <div class="element-breakdown">
+                                            <span class="breakdown-badge badge-green">VA: 14s</span>
+                                            <span class="breakdown-badge badge-red">Waste: 2.4s</span>
+                                        </div>
+                                    </div>
+                                    <div class="element-item">
+                                        <div class="element-header">
+                                            <div class="element-name">Return Tool</div>
+                                            <div class="element-time">14.5s</div>
+                                        </div>
+                                        <div class="element-breakdown">
+                                            <span class="breakdown-badge badge-yellow">NVA: 10s</span>
+                                            <span class="breakdown-badge badge-red">Waste: 4.5s</span>
+                                        </div>
+                                    </div>
+                                    <div class="element-item">
+                                        <div class="element-header">
+                                            <div class="element-name">Move to Next Station</div>
+                                            <div class="element-time">22.1s</div>
+                                        </div>
+                                        <div class="element-breakdown">
+                                            <span class="breakdown-badge badge-red">Waste: 22.1s</span>
+                                        </div>
+                                    </div>
+                                    <div class="element-item">
+                                        <div class="element-header">
+                                            <div class="element-name">Pick Component</div>
+                                            <div class="element-time">10.6s</div>
+                                        </div>
+                                        <div class="element-breakdown">
+                                            <span class="breakdown-badge badge-green">VA: 7s</span>
+                                            <span class="breakdown-badge badge-yellow">NVA: 3.6s</span>
+                                        </div>
+                                    </div>
+                                    <div class="element-item">
+                                        <div class="element-header">
+                                            <div class="element-name">Attach Component</div>
+                                            <div class="element-time">19.3s</div>
+                                        </div>
+                                        <div class="element-breakdown">
+                                            <span class="breakdown-badge badge-green">VA: 16s</span>
+                                            <span class="breakdown-badge badge-yellow">NVA: 3.3s</span>
+                                        </div>
+                                    </div>
+                                    <div class="element-item">
+                                        <div class="element-header">
+                                            <div class="element-name">Final Inspection</div>
+                                            <div class="element-time">7.9s</div>
+                                        </div>
+                                        <div class="element-breakdown">
+                                            <span class="breakdown-badge badge-green">VA: 6s</span>
+                                            <span class="breakdown-badge badge-yellow">NVA: 1.9s</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="scroll-indicator">Scroll sidebar to see all 12 elements</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Direction 3: Card Gallery -->
+        <div class="direction-section dir3" id="dir3">
+            <div class="direction-header">
+                <div class="direction-name">Direction 3: Card Gallery</div>
+                <div class="direction-personality">Modern & Visual • Card-Based • Interactive</div>
+                <div class="direction-description">
+                    Card-based design with elevated visuals. Each work element is a distinct card that can be clicked to view video clips. Hover effects and shadows create depth. Perfect for users who want a modern, interactive experience.
+                </div>
+                <div class="characteristics">
+                    <div class="characteristic">
+                        <div class="characteristic-label">Layout</div>
+                        <div class="characteristic-value">Card Grid</div>
+                    </div>
+                    <div class="characteristic">
+                        <div class="characteristic-label">Density</div>
+                        <div class="characteristic-value">Balanced</div>
+                    </div>
+                    <div class="characteristic">
+                        <div class="characteristic-label">Navigation</div>
+                        <div class="characteristic-value">Top Nav</div>
+                    </div>
+                    <div class="characteristic">
+                        <div class="characteristic-label">Visual Weight</div>
+                        <div class="characteristic-value">Rich (Elevated)</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mockup-container">
+                <div class="mockup-title">Video Analysis Screen</div>
+                <div class="mockup">
+                    <div class="mockup-nav">
+                        <div class="mockup-nav-title">Yamazumi</div>
+                        <div class="mockup-nav-items">
+                            <span class="mockup-nav-item active">Analysis</span>
+                            <span class="mockup-nav-item">Charts</span>
+                            <span class="mockup-nav-item">Settings</span>
+                        </div>
+                    </div>
+                    <div class="mockup-content">
+                        <div class="video-card">
+                            <div>Video Player (Card Style)</div>
+                        </div>
+                        <div class="timeline-card">
+                            <div class="timeline-bar">
+                                <div class="breakpoint"></div>
+                                <div class="breakpoint"></div>
+                            </div>
+                        </div>
+                        <div class="work-elements">
+                            <div class="element-card">
+                                <div class="element-name">Pick Part</div>
+                                <div class="element-time">12.5s</div>
+                                <div class="element-breakdown">
+                                    <span class="breakdown-badge badge-green">VA: 8s</span>
+                                    <span class="breakdown-badge badge-yellow">NVA: 4.5s</span>
+                                </div>
+                            </div>
+                            <div class="element-card">
+                                <div class="element-name">Position Part</div>
+                                <div class="element-time">8.3s</div>
+                                <div class="element-breakdown">
+                                    <span class="breakdown-badge badge-green">VA: 6s</span>
+                                    <span class="breakdown-badge badge-yellow">NVA: 2.3s</span>
+                                </div>
+                            </div>
+                            <div class="element-card">
+                                <div class="element-name">Install Bolt</div>
+                                <div class="element-time">18.2s</div>
+                                <div class="element-breakdown">
+                                    <span class="breakdown-badge badge-green">VA: 15s</span>
+                                    <span class="breakdown-badge badge-red">Waste: 3.2s</span>
+                                </div>
+                            </div>
+                            <div class="element-card">
+                                <div class="element-name">Tighten Bolt</div>
+                                <div class="element-time">14.7s</div>
+                                <div class="element-breakdown">
+                                    <span class="breakdown-badge badge-green">VA: 12s</span>
+                                    <span class="breakdown-badge badge-yellow">NVA: 2.7s</span>
+                                </div>
+                            </div>
+                            <div class="element-card">
+                                <div class="element-name">Pick Next Part</div>
+                                <div class="element-time">11.2s</div>
+                                <div class="element-breakdown">
+                                    <span class="breakdown-badge badge-yellow">NVA: 8s</span>
+                                    <span class="breakdown-badge badge-red">Waste: 3.2s</span>
+                                </div>
+                            </div>
+                            <div class="element-card">
+                                <div class="element-name">Inspect Assembly</div>
+                                <div class="element-time">9.8s</div>
+                                <div class="element-breakdown">
+                                    <span class="breakdown-badge badge-green">VA: 7s</span>
+                                    <span class="breakdown-badge badge-yellow">NVA: 2.8s</span>
+                                </div>
+                            </div>
+                            <div class="element-card">
+                                <div class="element-name">Apply Sealant</div>
+                                <div class="element-time">16.4s</div>
+                                <div class="element-breakdown">
+                                    <span class="breakdown-badge badge-green">VA: 14s</span>
+                                    <span class="breakdown-badge badge-red">Waste: 2.4s</span>
+                                </div>
+                            </div>
+                            <div class="element-card">
+                                <div class="element-name">Return Tool</div>
+                                <div class="element-time">14.5s</div>
+                                <div class="element-breakdown">
+                                    <span class="breakdown-badge badge-yellow">NVA: 10s</span>
+                                    <span class="breakdown-badge badge-red">Waste: 4.5s</span>
+                                </div>
+                            </div>
+                            <div class="element-card">
+                                <div class="element-name">Move to Next Station</div>
+                                <div class="element-time">22.1s</div>
+                                <div class="element-breakdown">
+                                    <span class="breakdown-badge badge-red">Waste: 22.1s</span>
+                                </div>
+                            </div>
+                            <div class="element-card">
+                                <div class="element-name">Pick Component</div>
+                                <div class="element-time">10.6s</div>
+                                <div class="element-breakdown">
+                                    <span class="breakdown-badge badge-green">VA: 7s</span>
+                                    <span class="breakdown-badge badge-yellow">NVA: 3.6s</span>
+                                </div>
+                            </div>
+                            <div class="element-card">
+                                <div class="element-name">Attach Component</div>
+                                <div class="element-time">19.3s</div>
+                                <div class="element-breakdown">
+                                    <span class="breakdown-badge badge-green">VA: 16s</span>
+                                    <span class="breakdown-badge badge-yellow">NVA: 3.3s</span>
+                                </div>
+                            </div>
+                            <div class="element-card">
+                                <div class="element-name">Final Inspection</div>
+                                <div class="element-time">7.9s</div>
+                                <div class="element-breakdown">
+                                    <span class="breakdown-badge badge-green">VA: 6s</span>
+                                    <span class="breakdown-badge badge-yellow">NVA: 1.9s</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="scroll-indicator">Scroll to see all 12 work elements (Total cycle time: 165.9s)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Direction 4: Minimal Focus -->
+        <div class="direction-section dir4" id="dir4">
+            <div class="direction-header">
+                <div class="direction-name">Direction 4: Minimal Focus</div>
+                <div class="direction-personality">Clean & Minimal • Content-First • Distraction-Free</div>
+                <div class="direction-description">
+                    Ultra-minimal design that removes all visual chrome. Content is the hero. Clean lines, subtle borders, maximum focus on the video and data. Perfect for users who want zero distractions and pure focus on analysis.
+                </div>
+                <div class="characteristics">
+                    <div class="characteristic">
+                        <div class="characteristic-label">Layout</div>
+                        <div class="characteristic-value">Centered Single</div>
+                    </div>
+                    <div class="characteristic">
+                        <div class="characteristic-label">Density</div>
+                        <div class="characteristic-value">Spacious</div>
+                    </div>
+                    <div class="characteristic">
+                        <div class="characteristic-label">Navigation</div>
+                        <div class="characteristic-value">Minimal</div>
+                    </div>
+                    <div class="characteristic">
+                        <div class="characteristic-label">Visual Weight</div>
+                        <div class="characteristic-value">Minimal</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mockup-container">
+                <div class="mockup-title">Video Analysis Screen</div>
+                <div class="mockup">
+                    <div class="mockup-nav">
+                        <div class="mockup-nav-title">Yamazumi</div>
+                        <div class="mockup-nav-items">
+                            <span class="mockup-nav-item active">Analysis</span>
+                            <span class="mockup-nav-item">Charts</span>
+                        </div>
+                    </div>
+                    <div class="mockup-content">
+                        <div class="video-section">
+                            <div>Video Player (Centered, Focused)</div>
+                        </div>
+                        <div class="timeline">
+                            <div class="timeline-bar">
+                                <div class="breakpoint"></div>
+                                <div class="breakpoint"></div>
+                            </div>
+                        </div>
+                        <div class="work-elements">
+                            <div class="element-card">
+                                <div class="element-header">
+                                    <div class="element-name">Pick Part</div>
+                                    <div class="element-time">12.5s</div>
+                                </div>
+                                <div class="element-breakdown">
+                                    <span class="breakdown-badge badge-green">VA: 8s</span>
+                                    <span class="breakdown-badge badge-yellow">NVA: 4.5s</span>
+                                </div>
+                            </div>
+                            <div class="element-card">
+                                <div class="element-header">
+                                    <div class="element-name">Position Part</div>
+                                    <div class="element-time">8.3s</div>
+                                </div>
+                                <div class="element-breakdown">
+                                    <span class="breakdown-badge badge-green">VA: 6s</span>
+                                    <span class="breakdown-badge badge-yellow">NVA: 2.3s</span>
+                                </div>
+                            </div>
+                            <div class="element-card">
+                                <div class="element-header">
+                                    <div class="element-name">Install Bolt</div>
+                                    <div class="element-time">18.2s</div>
+                                </div>
+                                <div class="element-breakdown">
+                                    <span class="breakdown-badge badge-green">VA: 15s</span>
+                                    <span class="breakdown-badge badge-red">Waste: 3.2s</span>
+                                </div>
+                            </div>
+                            <div class="element-card">
+                                <div class="element-header">
+                                    <div class="element-name">Tighten Bolt</div>
+                                    <div class="element-time">14.7s</div>
+                                </div>
+                                <div class="element-breakdown">
+                                    <span class="breakdown-badge badge-green">VA: 12s</span>
+                                    <span class="breakdown-badge badge-yellow">NVA: 2.7s</span>
+                                </div>
+                            </div>
+                            <div class="element-card">
+                                <div class="element-header">
+                                    <div class="element-name">Pick Next Part</div>
+                                    <div class="element-time">11.2s</div>
+                                </div>
+                                <div class="element-breakdown">
+                                    <span class="breakdown-badge badge-yellow">NVA: 8s</span>
+                                    <span class="breakdown-badge badge-red">Waste: 3.2s</span>
+                                </div>
+                            </div>
+                            <div class="element-card">
+                                <div class="element-header">
+                                    <div class="element-name">Inspect Assembly</div>
+                                    <div class="element-time">9.8s</div>
+                                </div>
+                                <div class="element-breakdown">
+                                    <span class="breakdown-badge badge-green">VA: 7s</span>
+                                    <span class="breakdown-badge badge-yellow">NVA: 2.8s</span>
+                                </div>
+                            </div>
+                            <div class="element-card">
+                                <div class="element-header">
+                                    <div class="element-name">Apply Sealant</div>
+                                    <div class="element-time">16.4s</div>
+                                </div>
+                                <div class="element-breakdown">
+                                    <span class="breakdown-badge badge-green">VA: 14s</span>
+                                    <span class="breakdown-badge badge-red">Waste: 2.4s</span>
+                                </div>
+                            </div>
+                            <div class="element-card">
+                                <div class="element-header">
+                                    <div class="element-name">Return Tool</div>
+                                    <div class="element-time">14.5s</div>
+                                </div>
+                                <div class="element-breakdown">
+                                    <span class="breakdown-badge badge-yellow">NVA: 10s</span>
+                                    <span class="breakdown-badge badge-red">Waste: 4.5s</span>
+                                </div>
+                            </div>
+                            <div class="element-card">
+                                <div class="element-header">
+                                    <div class="element-name">Move to Next Station</div>
+                                    <div class="element-time">22.1s</div>
+                                </div>
+                                <div class="element-breakdown">
+                                    <span class="breakdown-badge badge-red">Waste: 22.1s</span>
+                                </div>
+                            </div>
+                            <div class="element-card">
+                                <div class="element-header">
+                                    <div class="element-name">Pick Component</div>
+                                    <div class="element-time">10.6s</div>
+                                </div>
+                                <div class="element-breakdown">
+                                    <span class="breakdown-badge badge-green">VA: 7s</span>
+                                    <span class="breakdown-badge badge-yellow">NVA: 3.6s</span>
+                                </div>
+                            </div>
+                            <div class="element-card">
+                                <div class="element-header">
+                                    <div class="element-name">Attach Component</div>
+                                    <div class="element-time">19.3s</div>
+                                </div>
+                                <div class="element-breakdown">
+                                    <span class="breakdown-badge badge-green">VA: 16s</span>
+                                    <span class="breakdown-badge badge-yellow">NVA: 3.3s</span>
+                                </div>
+                            </div>
+                            <div class="element-card">
+                                <div class="element-header">
+                                    <div class="element-name">Final Inspection</div>
+                                    <div class="element-time">7.9s</div>
+                                </div>
+                                <div class="element-breakdown">
+                                    <span class="breakdown-badge badge-green">VA: 6s</span>
+                                    <span class="breakdown-badge badge-yellow">NVA: 1.9s</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="scroll-indicator">Scroll to see all 12 work elements (Total cycle time: 165.9s)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Direction 5: Top Navigation -->
+        <div class="direction-section dir5" id="dir5">
+            <div class="direction-header">
+                <div class="direction-name">Direction 5: Top Navigation</div>
+                <div class="direction-personality">Standard • Familiar • Efficient</div>
+                <div class="direction-description">
+                    Classic top navigation with clean white header. Familiar pattern that users expect. Efficient use of space with three-column grid for work elements. Perfect for users who want a standard, no-surprises interface.
+                </div>
+                <div class="characteristics">
+                    <div class="characteristic">
+                        <div class="characteristic-label">Layout</div>
+                        <div class="characteristic-value">Standard Grid</div>
+                    </div>
+                    <div class="characteristic">
+                        <div class="characteristic-label">Density</div>
+                        <div class="characteristic-value">Balanced</div>
+                    </div>
+                    <div class="characteristic">
+                        <div class="characteristic-label">Navigation</div>
+                        <div class="characteristic-value">Top Nav (Light)</div>
+                    </div>
+                    <div class="characteristic">
+                        <div class="characteristic-label">Visual Weight</div>
+                        <div class="characteristic-value">Standard</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mockup-container">
+                <div class="mockup-title">Video Analysis Screen</div>
+                <div class="mockup">
+                    <div class="mockup-nav">
+                        <div class="mockup-nav-title">Yamazumi</div>
+                        <div class="mockup-nav-items">
+                            <span class="mockup-nav-item active">Analysis</span>
+                            <span class="mockup-nav-item">Charts</span>
+                            <span class="mockup-nav-item">Settings</span>
+                        </div>
+                    </div>
+                    <div class="mockup-content">
+                        <div class="video-section">
+                            <div>Video Player</div>
+                        </div>
+                        <div class="timeline">
+                            <div class="timeline-bar">
+                                <div class="breakpoint"></div>
+                                <div class="breakpoint"></div>
+                            </div>
+                        </div>
+                        <div class="work-elements">
+                            <div class="element-card">
+                                <div class="element-name">Pick Part</div>
+                                <div class="element-time">12.5s</div>
+                                <div class="element-breakdown">
+                                    <span class="breakdown-badge badge-green">VA: 8s</span>
+                                    <span class="breakdown-badge badge-yellow">NVA: 4.5s</span>
+                                </div>
+                            </div>
+                            <div class="element-card">
+                                <div class="element-name">Position Part</div>
+                                <div class="element-time">8.3s</div>
+                                <div class="element-breakdown">
+                                    <span class="breakdown-badge badge-green">VA: 6s</span>
+                                    <span class="breakdown-badge badge-yellow">NVA: 2.3s</span>
+                                </div>
+                            </div>
+                            <div class="element-card">
+                                <div class="element-name">Install Bolt</div>
+                                <div class="element-time">18.2s</div>
+                                <div class="element-breakdown">
+                                    <span class="breakdown-badge badge-green">VA: 15s</span>
+                                    <span class="breakdown-badge badge-red">Waste: 3.2s</span>
+                                </div>
+                            </div>
+                            <div class="element-card">
+                                <div class="element-name">Tighten Bolt</div>
+                                <div class="element-time">14.7s</div>
+                                <div class="element-breakdown">
+                                    <span class="breakdown-badge badge-green">VA: 12s</span>
+                                    <span class="breakdown-badge badge-yellow">NVA: 2.7s</span>
+                                </div>
+                            </div>
+                            <div class="element-card">
+                                <div class="element-name">Pick Next Part</div>
+                                <div class="element-time">11.2s</div>
+                                <div class="element-breakdown">
+                                    <span class="breakdown-badge badge-yellow">NVA: 8s</span>
+                                    <span class="breakdown-badge badge-red">Waste: 3.2s</span>
+                                </div>
+                            </div>
+                            <div class="element-card">
+                                <div class="element-name">Inspect Assembly</div>
+                                <div class="element-time">9.8s</div>
+                                <div class="element-breakdown">
+                                    <span class="breakdown-badge badge-green">VA: 7s</span>
+                                    <span class="breakdown-badge badge-yellow">NVA: 2.8s</span>
+                                </div>
+                            </div>
+                            <div class="element-card">
+                                <div class="element-name">Apply Sealant</div>
+                                <div class="element-time">16.4s</div>
+                                <div class="element-breakdown">
+                                    <span class="breakdown-badge badge-green">VA: 14s</span>
+                                    <span class="breakdown-badge badge-red">Waste: 2.4s</span>
+                                </div>
+                            </div>
+                            <div class="element-card">
+                                <div class="element-name">Return Tool</div>
+                                <div class="element-time">14.5s</div>
+                                <div class="element-breakdown">
+                                    <span class="breakdown-badge badge-yellow">NVA: 10s</span>
+                                    <span class="breakdown-badge badge-red">Waste: 4.5s</span>
+                                </div>
+                            </div>
+                            <div class="element-card">
+                                <div class="element-name">Move to Next Station</div>
+                                <div class="element-time">22.1s</div>
+                                <div class="element-breakdown">
+                                    <span class="breakdown-badge badge-red">Waste: 22.1s</span>
+                                </div>
+                            </div>
+                            <div class="element-card">
+                                <div class="element-name">Pick Component</div>
+                                <div class="element-time">10.6s</div>
+                                <div class="element-breakdown">
+                                    <span class="breakdown-badge badge-green">VA: 7s</span>
+                                    <span class="breakdown-badge badge-yellow">NVA: 3.6s</span>
+                                </div>
+                            </div>
+                            <div class="element-card">
+                                <div class="element-name">Attach Component</div>
+                                <div class="element-time">19.3s</div>
+                                <div class="element-breakdown">
+                                    <span class="breakdown-badge badge-green">VA: 16s</span>
+                                    <span class="breakdown-badge badge-yellow">NVA: 3.3s</span>
+                                </div>
+                            </div>
+                            <div class="element-card">
+                                <div class="element-name">Final Inspection</div>
+                                <div class="element-time">7.9s</div>
+                                <div class="element-breakdown">
+                                    <span class="breakdown-badge badge-green">VA: 6s</span>
+                                    <span class="breakdown-badge badge-yellow">NVA: 1.9s</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="scroll-indicator">Scroll to see all 12 work elements (Total cycle time: 165.9s)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Direction 6: Sidebar Navigation -->
+        <div class="direction-section dir6" id="dir6">
+            <div class="direction-header">
+                <div class="direction-name">Direction 6: Sidebar Navigation</div>
+                <div class="direction-personality">Organized • Structured • Multi-Screen</div>
+                <div class="direction-description">
+                    Left sidebar navigation with main content area. Perfect for applications with multiple screens and features. Sidebar provides persistent navigation while main area focuses on current task. Ideal for complex workflows.
+                </div>
+                <div class="characteristics">
+                    <div class="characteristic">
+                        <div class="characteristic-label">Layout</div>
+                        <div class="characteristic-value">Sidebar + Main</div>
+                    </div>
+                    <div class="characteristic">
+                        <div class="characteristic-label">Density</div>
+                        <div class="characteristic-value">Balanced</div>
+                    </div>
+                    <div class="characteristic">
+                        <div class="characteristic-label">Navigation</div>
+                        <div class="characteristic-value">Sidebar</div>
+                    </div>
+                    <div class="characteristic">
+                        <div class="characteristic-label">Visual Weight</div>
+                        <div class="characteristic-value">Structured</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mockup-container">
+                <div class="mockup-title">Video Analysis Screen</div>
+                <div class="mockup">
+                    <div class="mockup-content">
+                        <div class="sidebar-nav">
+                            <div class="nav-item active">Analysis</div>
+                            <div class="nav-item">Charts</div>
+                            <div class="nav-item">Videos</div>
+                            <div class="nav-item">Settings</div>
+                        </div>
+                        <div class="main-content">
+                            <div class="video-section">
+                                <div>Video Player</div>
+                            </div>
+                            <div class="timeline">
+                                <div class="timeline-bar">
+                                    <div class="breakpoint"></div>
+                                    <div class="breakpoint"></div>
+                                </div>
+                            </div>
+                            <div class="work-elements">
+                                <div class="element-card">
+                                    <div class="element-name">Pick Part</div>
+                                    <div class="element-time">12.5s</div>
+                                    <div class="element-breakdown">
+                                        <span class="breakdown-badge badge-green">VA: 8s</span>
+                                        <span class="breakdown-badge badge-yellow">NVA: 4.5s</span>
+                                    </div>
+                                </div>
+                                <div class="element-card">
+                                    <div class="element-name">Position Part</div>
+                                    <div class="element-time">8.3s</div>
+                                    <div class="element-breakdown">
+                                        <span class="breakdown-badge badge-green">VA: 6s</span>
+                                        <span class="breakdown-badge badge-yellow">NVA: 2.3s</span>
+                                    </div>
+                                </div>
+                                <div class="element-card">
+                                    <div class="element-name">Install Bolt</div>
+                                    <div class="element-time">18.2s</div>
+                                    <div class="element-breakdown">
+                                        <span class="breakdown-badge badge-green">VA: 15s</span>
+                                        <span class="breakdown-badge badge-red">Waste: 3.2s</span>
+                                    </div>
+                                </div>
+                                <div class="element-card">
+                                    <div class="element-name">Tighten Bolt</div>
+                                    <div class="element-time">14.7s</div>
+                                    <div class="element-breakdown">
+                                        <span class="breakdown-badge badge-green">VA: 12s</span>
+                                        <span class="breakdown-badge badge-yellow">NVA: 2.7s</span>
+                                    </div>
+                                </div>
+                                <div class="element-card">
+                                    <div class="element-name">Pick Next Part</div>
+                                    <div class="element-time">11.2s</div>
+                                    <div class="element-breakdown">
+                                        <span class="breakdown-badge badge-yellow">NVA: 8s</span>
+                                        <span class="breakdown-badge badge-red">Waste: 3.2s</span>
+                                    </div>
+                                </div>
+                                <div class="element-card">
+                                    <div class="element-name">Inspect Assembly</div>
+                                    <div class="element-time">9.8s</div>
+                                    <div class="element-breakdown">
+                                        <span class="breakdown-badge badge-green">VA: 7s</span>
+                                        <span class="breakdown-badge badge-yellow">NVA: 2.8s</span>
+                                    </div>
+                                </div>
+                                <div class="element-card">
+                                    <div class="element-name">Apply Sealant</div>
+                                    <div class="element-time">16.4s</div>
+                                    <div class="element-breakdown">
+                                        <span class="breakdown-badge badge-green">VA: 14s</span>
+                                        <span class="breakdown-badge badge-red">Waste: 2.4s</span>
+                                    </div>
+                                </div>
+                                <div class="element-card">
+                                    <div class="element-name">Return Tool</div>
+                                    <div class="element-time">14.5s</div>
+                                    <div class="element-breakdown">
+                                        <span class="breakdown-badge badge-yellow">NVA: 10s</span>
+                                        <span class="breakdown-badge badge-red">Waste: 4.5s</span>
+                                    </div>
+                                </div>
+                                <div class="element-card">
+                                    <div class="element-name">Move to Next Station</div>
+                                    <div class="element-time">22.1s</div>
+                                    <div class="element-breakdown">
+                                        <span class="breakdown-badge badge-red">Waste: 22.1s</span>
+                                    </div>
+                                </div>
+                                <div class="element-card">
+                                    <div class="element-name">Pick Component</div>
+                                    <div class="element-time">10.6s</div>
+                                    <div class="element-breakdown">
+                                        <span class="breakdown-badge badge-green">VA: 7s</span>
+                                        <span class="breakdown-badge badge-yellow">NVA: 3.6s</span>
+                                    </div>
+                                </div>
+                                <div class="element-card">
+                                    <div class="element-name">Attach Component</div>
+                                    <div class="element-time">19.3s</div>
+                                    <div class="element-breakdown">
+                                        <span class="breakdown-badge badge-green">VA: 16s</span>
+                                        <span class="breakdown-badge badge-yellow">NVA: 3.3s</span>
+                                    </div>
+                                </div>
+                                <div class="element-card">
+                                    <div class="element-name">Final Inspection</div>
+                                    <div class="element-time">7.9s</div>
+                                    <div class="element-breakdown">
+                                        <span class="breakdown-badge badge-green">VA: 6s</span>
+                                        <span class="breakdown-badge badge-yellow">NVA: 1.9s</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="scroll-indicator">Scroll to see all 12 work elements (Total cycle time: 165.9s)</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="thumbnail-grid">
+            <div class="thumbnail active" onclick="goToDirection(1)">
+                <div class="thumbnail-title">1. Spacious Explorer</div>
+                <div class="thumbnail-desc">Friendly, breathing room</div>
+            </div>
+            <div class="thumbnail" onclick="goToDirection(2)">
+                <div class="thumbnail-title">2. Dense Dashboard</div>
+                <div class="thumbnail-desc">Information-rich, efficient</div>
+            </div>
+            <div class="thumbnail" onclick="goToDirection(3)">
+                <div class="thumbnail-title">3. Card Gallery</div>
+                <div class="thumbnail-desc">Modern, interactive</div>
+            </div>
+            <div class="thumbnail" onclick="goToDirection(4)">
+                <div class="thumbnail-title">4. Minimal Focus</div>
+                <div class="thumbnail-desc">Clean, distraction-free</div>
+            </div>
+            <div class="thumbnail" onclick="goToDirection(5)">
+                <div class="thumbnail-title">5. Top Navigation</div>
+                <div class="thumbnail-desc">Standard, familiar</div>
+            </div>
+            <div class="thumbnail" onclick="goToDirection(6)">
+                <div class="thumbnail-title">6. Sidebar Navigation</div>
+                <div class="thumbnail-desc">Organized, structured</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentDirection = 1;
+        const totalDirections = 6;
+
+        function updateDisplay() {
+            // Hide all directions
+            document.querySelectorAll('.direction-section').forEach(section => {
+                section.classList.remove('active');
+            });
+
+            // Show current direction
+            document.getElementById(`dir${currentDirection}`).classList.add('active');
+
+            // Update counter
+            document.getElementById('currentDir').textContent = currentDirection;
+
+            // Update buttons
+            document.getElementById('prevBtn').disabled = currentDirection === 1;
+            document.getElementById('nextBtn').disabled = currentDirection === totalDirections;
+
+            // Update thumbnails
+            document.querySelectorAll('.thumbnail').forEach((thumb, index) => {
+                thumb.classList.toggle('active', index + 1 === currentDirection);
+            });
+
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function changeDirection(delta) {
+            const newDirection = currentDirection + delta;
+            if (newDirection >= 1 && newDirection <= totalDirections) {
+                currentDirection = newDirection;
+                updateDisplay();
+            }
+        }
+
+        function goToDirection(dir) {
+            currentDirection = dir;
+            updateDisplay();
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') changeDirection(-1);
+            if (e.key === 'ArrowRight') changeDirection(1);
+        });
+
+        // Initialize
+        updateDisplay();
+    </script>
+</body>
+</html>
